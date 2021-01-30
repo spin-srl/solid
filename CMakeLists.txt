@@ -1,18 +1,23 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(TARGET_OS \"${CMAKE_SYSTEM_NAME}\")
+include(CheckIncludeFile)
 
-if (TARGET_OS STREQUAL "\"\"")
+CHECK_INCLUDE_FILE("user32.h" IS_WIN)
+
+option(BUILD_FOR_WINDOWS "Build for windows")
+
+if (IS_WIN OR BUILD_FOR_WINDOWS)
+    set(TARGET_OS "windows")
+else()
     set(TARGET_OS "linux")
 endif()
 
-set(PROJECT_NAME "SolidFLTK-${TARGET_OS}" )
+set(PROJECT_NAME "Solid-${TARGET_OS}" )
 
 project(${PROJECT_NAME})
 
 FILE(GLOB SRCS "src/*.cpp" "src/*.cxx")
 
-#message("TARGET_OS = '${CMAKE_SYSTEM_NAME}'")
 add_library(${PROJECT_NAME} ${SRCS})
 
 add_executable(app ${SRCS} tests/tests.cpp)
@@ -20,6 +25,7 @@ add_executable(app ${SRCS} tests/tests.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 target_include_directories(app PUBLIC "include")
 
+if (TARGET_OS STREQUAL "linux")
 target_link_libraries(app fltk
                                         X11
                                         Xext
@@ -29,6 +35,15 @@ target_link_libraries(app fltk
                                         fontconfig
                                         dl
                                         pthread)
+else()
+    target_link_libraries(app fltk
+                                        pthread
+                                        ole32
+                                        uuid
+                                        comctl32
+                                        comdlg32
+                                        ws2_32)
+endif()
 
 target_link_libraries(app ${PROJECT_NAME})
 
