@@ -10,12 +10,12 @@ set(PROJECT_NAME "SolidFLTK-${TARGET_OS}" )
 
 project(${PROJECT_NAME})
 
-FILE(GLOB SRCS "src/*.cpp")
+FILE(GLOB SRCS "src/*.cpp" "src/*.cxx")
 
 #message("TARGET_OS = '${CMAKE_SYSTEM_NAME}'")
 add_library(${PROJECT_NAME} ${SRCS})
 
-add_executable(app ${SRCS})
+add_executable(app ${SRCS} tests/tests.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 target_include_directories(app PUBLIC "include")
