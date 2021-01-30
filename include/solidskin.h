@@ -24,4 +24,17 @@ class SolidSkin
 
         Fl_Color Surface = FL_WHITE;
         Fl_Color OnSurface = FL_BLACK;
+
+        static bool initialized;
+
+        static bool initialize(){
+            if (initialized)
+                return false;
+
+            Fl::set_font(0, "Roboto");
+
+            initialized=true;
+
+            return true;
+        }
 };

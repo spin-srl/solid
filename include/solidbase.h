@@ -27,7 +27,7 @@ public:
         if (initialized)
             return false;
 
-        Fl::set_font(0, "Roboto");
+        SolidSkin::initialize();
 
         initialized=true;
 
