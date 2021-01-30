@@ -36,8 +36,9 @@ target_link_libraries(app fltk
                                         dl
                                         pthread)
 else()
-    target_link_libraries(app fltk
-                                        pthread
+    target_link_libraries(app
+                                        /Shine/solid/libfltk.a
+                                        winpthread
                                         ole32
                                         uuid
                                         comctl32

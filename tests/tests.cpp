@@ -5,15 +5,14 @@
 #include "group.h"
 #include "button.h"
 
-int main()
-{
+int main() {
     SolidBase::initialize();
 
-    Window* mw = new Window(0, 0, 1100, 100, "TestWindow", "TW");
-    Group* g = new Group(5, 5, 80, 20, "", "group0");
-    Button* b = new Button(5, 5, 80, 20, "TextButton", "TB");
-    Button* b2 = new Button(5, 30, 80, 20, "OutlineButton", "TB");
-    Button* b3 = new Button(5, 55, 80, 20, "PrimaryButton", "TB");
+    Window *mw = new Window(0, 0, 1100, 100, "TestWindow", "TW");
+    Group *g = new Group(5, 5, 80, 20, "", "group0");
+    Button *b = new Button(5, 5, 80, 20, "Text", "TB");
+    Button *b2 = new Button(5, 30, 80, 20, "Outline", "TB");
+    Button *b3 = new Button(5, 55, 80, 20, "Primary", "TB");
 
     b->Type = ButtonType::Text;
     b2->Type = ButtonType::Outline;

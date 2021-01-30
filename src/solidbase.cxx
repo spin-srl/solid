@@ -1,6 +1,5 @@
 #include "solidbase.h"
 
-SolidSkin SolidSkin::current;
 bool SolidBase::initialized=false;
 
 SolidBase::SolidBase(const char* name)

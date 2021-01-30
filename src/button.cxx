@@ -2,12 +2,13 @@
 #include "Fl/fl_draw.H"
 #include <Fl/Fl_Group.H>
 
-Button::Button(int x, int y, int w, int h, const char* label, const char* name):
+Button::Button(int x, int y, int w, int h, const char* l, const char* name):
     SolidBase(name),
-    Fl_Button(x, y, w, h, label)
+    Fl_Button(x, y, w, h, l)
 {
-    labelcolor(FL_GRAY);
-    labelsize(10);
+    this->labelfont(1);
+    this->labelsize(12);
+    this->label(l);
 }
 
 int Button::handle(int evt)
@@ -28,12 +29,13 @@ int Button::handle(int evt)
 
 void Button::draw()
 {
-    fl_rectf(x(), y(), w(), h(), SolidSkin::current.Surface);
+    fl_push_clip(x(),y(),w(),h());
+    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
 
     bool hovered = Fl::belowmouse() == this;
     bool clicked = Fl::event_button1();
 
-    Fl_Color textcolor = hovered ? fl_lighter(SolidSkin::current.Primary) : SolidSkin::current.Primary;
+    Fl_Color textcolor = hovered ? fl_lighter(SolidSkin::current->Primary) : SolidSkin::current->Primary;
 
     switch (Type)
     {
@@ -41,18 +43,18 @@ void Button::draw()
         Fl_Color outlinecolor;
         Fl_Color target;
 
-        outlinecolor = SolidSkin::current.Surface;
-        target = fl_contrast(FL_WHITE, SolidSkin::current.Surface);
+        outlinecolor = SolidSkin::current->Surface;
+        target = fl_contrast(FL_WHITE, SolidSkin::current->Surface);
 
         outlinecolor = fl_color_average(outlinecolor, target, 0.8);
         fl_rect(x(), y(), w(), h(), outlinecolor);
         break;
 
     case Primary:
-        textcolor = hovered ? fl_lighter(SolidSkin::current.OnPrimary) : SolidSkin::current.OnPrimary;
+        textcolor = hovered ? fl_lighter(SolidSkin::current->OnPrimary) : SolidSkin::current->OnPrimary;
         Fl_Color clickedcolor;
-        clickedcolor = clicked ? fl_darker(SolidSkin::current.Primary) : fl_lighter(SolidSkin::current.Primary);
-        fl_rectf(x(), y(), w(), h(), hovered ? clickedcolor : SolidSkin::current.Primary);
+        clickedcolor = clicked ? fl_darker(SolidSkin::current->Primary) : fl_lighter(SolidSkin::current->Primary);
+        fl_rectf(x(), y(), w(), h(), hovered ? clickedcolor : SolidSkin::current->Primary);
         break;
     }
 
@@ -64,4 +66,18 @@ void Button::draw()
     fl_color(textcolor);
     fl_font(labelfont(), labelsize());
     fl_draw(label(), x(), y(), w(), h(), align(), active() ? image() : deimage(), true);
+   fl_pop_clip();
+}
+#include "ctype.h"
+
+void Button::label(const char *l) {
+    char* ll=(char*)strdup(l);
+    for (int i = 0; i < strlen(l); ++i) {
+        ll[i]=toupper(ll[i]);
+    }
+    Fl_Button::label(ll);
+}
+
+const char *Button::label() {
+    return Fl_Button::label();
 }
