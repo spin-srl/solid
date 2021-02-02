@@ -28,6 +28,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE "include")
 target_include_directories(app PUBLIC "include")
 
 if (TARGET_OS STREQUAL "linux")
+    target_include_directories(app PUBLIC "/usr/include/cairo")
     target_link_libraries(app fltk
             X11
             Xext

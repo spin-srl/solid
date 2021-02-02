@@ -4,12 +4,12 @@
 #include <Fl/Fl_Cairo.H>
 #include <cairo/cairo.h>
 
-Button::Button(int x, int y, int w, int h, const char *l, const char *name) :
+Button::Button(int x, int y, int w, int h, const char *label, const char *name) :
         SolidBase(name),
-        Fl_Button(x, y, w, h, l) {
+        Fl_Button(x, y, w, h, label) {
     this->labelfont(1);
     this->labelsize(12);
-    this->label(l);
+    this->label(label);
 }
 
 int Button::handle(int evt) {
@@ -96,23 +96,29 @@ void Button::draw() {
 
     set_cairo_color(cc, textcolor);
 
-    auto font = cairo_toy_font_face_create("Roboto", cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
-                                           cairo_font_weight_t::CAIRO_FONT_WEIGHT_BOLD);
+    auto font = SolidSkin::fonts[1];
 
     cairo_set_line_width(cc, 1);
     cairo_set_font_face(cc, font);
-    cairo_set_font_size(cc, 12);
+    cairo_set_font_size(cc, labelsize());
 
     cairo_text_extents_t extents;
     cairo_text_extents(cc, label(), &extents);
     cairo_move_to(cc, x() + w() / 2 - extents.width / 2, y() + h() / 2 + extents.height / 2);
 
     cairo_show_text(cc, label());
+
+    if (Fl::belowmouse() != this->as_widget())
+        return;
+
+    debugDraw();
 }
 
 #include "ctype.h"
 
 void Button::label(const char *l) {
+    if (l == nullptr)return;
+
     char *ll = (char *) strdup(l);
     for (int i = 0; i < strlen(l); ++i) {
         ll[i] = toupper(ll[i]);
@@ -122,4 +128,21 @@ void Button::label(const char *l) {
 
 const char *Button::label() {
     return Fl_Button::label();
+}
+
+Measure Button::layout() {
+    cairo_text_extents_t extents;
+
+    auto cc = Fl::cairo_cc();
+    if (cc == nullptr) {
+        printf("NOT Found!\n");
+        return Measure{w(), h()};
+    }
+
+    cairo_set_font_face(cc, SolidSkin::fonts[1]);
+    cairo_set_font_size(cc, labelsize());
+    cairo_text_extents(cc, label(), &extents);
+
+    return Measure{20 + static_cast<int>(extents.width + padding.Horizontal()),
+                   15 + static_cast<int>(extents.height + padding.Vertical())};
 }
