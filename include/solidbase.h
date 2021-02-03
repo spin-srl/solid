@@ -78,8 +78,9 @@ public:
     virtual ~SolidBase();
 
     //TODO: Finish `char *Path()`, check the effect of non-named widgets
+    //TODO: Relative paths(like using .. and .) and path wildcards
     ///Gets the path of the widget
-    char *Path();
+    virtual char *Path();
 
     ///Splits the path and returns whether there are more path-items left to process or it was the last
     ///params:

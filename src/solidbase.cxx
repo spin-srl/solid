@@ -1,11 +1,12 @@
 #include <Fl/fl_draw.H>
+#include <string>
 #include "solidbase.h"
 #include "box.h"
 
 bool SolidBase::initialized = false;
 
 SolidBase::SolidBase(const char *name) {
-    assert(name!= nullptr);
+    assert(name != nullptr);
 
     this->Name = name;
 }
@@ -20,19 +21,19 @@ char *SolidBase::Path() {
     Fl_Widget *w = dynamic_cast<Fl_Widget *>(this);
 
     if (w->parent() == nullptr) {
-        return strdup((char *) this->Name);
+        return (char *) this->Name;
     }
 
-    SolidBase *solidparent = dynamic_cast<SolidBase *>(w->parent());
+    SolidBase *solidParent = dynamic_cast<SolidBase *>(w->parent());
 
-    if (solidparent == nullptr) {
-        return strdup((char *) this->Name);
+    if (solidParent == nullptr) {
+        return (char *) this->Name;
     }
 
-    char *parentname = solidparent->Path();
-    char *ret = (char *) malloc(strlen(parentname) + strlen(this->Name) + 1);
-    sprintf(ret, "%s/%s", (const char *) parentname, (const char *) this->Name);
-    free((void *) parentname);
+    char *parentName = solidParent->Path();
+
+    char *ret = (char *) malloc(strlen(parentName) + strlen(this->Name) + 1);
+    sprintf(ret, "%s/%s", (const char *) parentName, (const char *) this->Name);
 
     return ret;
 }
@@ -110,22 +111,38 @@ SolidBase *SolidBase::GetChild(const char *path) {
 }
 
 void SolidBase::debugDraw() {
+    return;
+    cairo_t *cc = Fl::cairo_cc();
+    if (cc == nullptr)return;
+
     Fl_Widget *w = this->as_widget();
 
-    fl_line_style(FL_DASHDOT, 1, 0);
-    fl_color(FL_RED);
-    fl_rect(w->x(), w->y(), w->w(), w->h());
-    fl_line_style(0, 0, 0);
+    cairo_set_source_rgba(cc, 1, 0, 0, 0.5);
+    cairo_set_line_width(cc, 1);
+
+    cairo_rectangle(cc, w->x(), w->y(), w->w(), w->h());
+    cairo_stroke(cc);
+
+    return;
 
     int namew = 0, nameh = 0;
 
-    fl_font(0, 8);
-    fl_measure(this->Path(), namew, nameh, false);
+    cairo_set_font_face(cc, SolidSkin::current->fonts[0]);
+    cairo_text_extents_t extents;
+    char *path = this->Path();
+    cairo_text_extents(cc, path, &extents);
 
-    fl_rectf(w->x(), w->y() - nameh, namew, nameh, FL_LIGHT1);
-    fl_color(FL_BLACK);
-    fl_draw(this->Path(), w->x(), w->y() - nameh, namew, nameh, FL_ALIGN_CENTER);
+    namew = extents.width;
+    nameh = extents.height;
 
+    cairo_rectangle(cc, w->x(), w->y() - nameh, namew, nameh);
+    cairo_fill(cc);
+
+    cairo_set_source_rgb(cc, 1, 1, 1);
+
+    cairo_move_to(cc, w->x() + w->w() / 2 - namew / 2, w->y() + w->h() / 2 - nameh / 2);
+    printf(this->Path());
+    cairo_show_text(cc, this->Path());
 }
 
 Fl_Widget *SolidBase::as_widget() {

@@ -6,101 +6,68 @@ Box::Box(int x, int y, int w, int h, const char *name) : Group(x, y, w, h, nullp
 Measure Box::layout() {
     auto cc = Fl::cairo_cc();
 
-    using namespace std;
+    Fl_Group::resize(x(), y(), std::max(w(), 10), std::max(h(), 10));
+//    Fl_Group::resize(x(),y(),w(),h());
 
-    const auto isVertical = direction == Vertical;
+    if (cc == nullptr)return Measure{};
 
-    int all = isVertical ? h() : w();
-    int otherAxis = 0;
-    int available = isVertical ? all - margin.Vertical() : all - margin.Horizontal();
-    available -= max(0.0, (children() - 1) * spacing);
+    bool isVertical = direction == Vertical;
 
-    vector<SolidBase *> second_pass;
+    double wholeMargin = isVertical ? this->margin.Vertical() : this->margin.Horizontal();
+    double childSpacing = (children() <= 1) ? 0 : (children() - 1) * spacing;
+    double available = (isVertical ? h() : w()) - wholeMargin - childSpacing;
+    double otherAxis = 0;
 
-    int offset = isVertical ? margin.top + padding.top : margin.left + padding.left;
+    int offset = 0;
 
-    for (int i = 0; i < children(); ++i) {
-        auto *item = dynamic_cast<SolidBase *>(child(i));
-        Measure m{};
+    for (int child_id = 0; child_id < children(); ++child_id) {
+        Fl_Widget *flChild = child(child_id);
+        auto solidChild = dynamic_cast<SolidBase *>(flChild);
 
-//        if (item->boxAlign != BoxAlign::Fill) {
-        m = item->layout();
-//        } else {
-//            second_pass.push_back(item);
-//        }
+        Measure m = solidChild ? solidChild->layout() : Measure{flChild->w(), flChild->h()};
+
+        int newX = (int) (x() + this->margin.left);
+        int newY = (int) (y() + this->margin.top);
 
         if (isVertical) {
-            if (item->boxAlign == Fill)
-                m.Width = w() - padding.Horizontal();
-
-            item->as_widget()->resize(x() + padding.left + margin.left, y() + offset,
-                                      (int) m.Width,
-                                      (int) m.Height);
+            newY += offset;
+            m.Width = std::max(m.Width, w() - this->margin.Horizontal());
+            available -= m.Height;
+            otherAxis = std::max(otherAxis, m.Width + wholeMargin);
         } else {
-            if (item->boxAlign == Fill)
-                m.Height = h() - padding.Vertical();
-
-            item->as_widget()->resize(x() + offset, y() + padding.top + margin.top,
-                                      (int) m.Width,
-                                      (int) m.Height);
+            newX += offset;
+            m.Height = std::max(m.Height, h() - this->margin.Vertical());
+            available -= m.Width;
+            otherAxis = std::max(otherAxis, m.Height + wholeMargin);
         }
 
-        available -= isVertical ? m.Height : m.Width;
-//        available -= spacing;
+        offset += (int) (isVertical ? m.Height : m.Width);
+        offset += (int) spacing;
 
-        if (otherAxis < (isVertical ? m.Height : m.Width) + spacing) {
-            otherAxis = (isVertical ? m.Width : m.Height) + spacing;
-        }
-
-        offset += (isVertical ? m.Height : m.Width) + spacing;
+        printf("x: %d, y: %d, NewX: %d newY: %d\n", x(), y(), newX, newY);
+        flChild->resize(newX, newY, m.Width, m.Height);
     }
 
-//    int slice_to_share;
-//    if (available > 0) {
-//        available / second_pass.size();
-//    }
+    int growX = 0;
+    int growY = 0;
 
-//    for (SolidBase *item = second_pass.back(); !second_pass.empty(); second_pass.pop_back()) {
-//        item->layout(cc);
-//    }
-//
-//    if (available < 0) {
-//        if (isVertical) {
-//            Fl_Widget::size(w(), h() - available);
-//            return Measure{w(), h() - available};
-//        } else {
-//            Fl_Widget::size(w() - available, h());
-//            return Masure{w() - available, h()};
-//        }
-//    }
-
-    int growX = 0, growY = 0;
-    if (isVertical && available < 0) {
-        if (otherAxis > w()) {
-            growX = otherAxis - w();
+    if (available < 0) {
+        if (isVertical) {
+            growY = -available;
+            if (otherAxis > w()) {
+                growX = otherAxis - w();
+            }
+        } else {
+            growX = -available;
+            if (otherAxis > h()) {
+                growY = otherAxis - h();
+            }
         }
-        growY = -available;
-    } else {
-        if (otherAxis > h()) {
-            growY = otherAxis - h();
-        }
-        growX = -available;
     }
 
-    Fl_Widget::size(w() + growX, h() + growY);
+    auto newSize = Measure{w() + growX, h() + growY};
 
-    return {w(), y()};
-}
-
-void Box::draw() {
-    Group::draw();
-}
-
-int Box::handle(int evt) {
-    if (evt == FL_ENTER || evt == FL_LEAVE)
-        redraw();
-
-    return Fl_Group::handle(evt);
+    return newSize;
 }
 
 void Box::resize(int x, int y, int w, int h) {

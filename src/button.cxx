@@ -134,7 +134,7 @@ Measure Button::layout() {
     cairo_text_extents_t extents;
 
     auto cc = Fl::cairo_cc();
-    if (cc == nullptr) {
+    if (cc == nullptr || label() == nullptr) {
         printf("NOT Found!\n");
         return Measure{w(), h()};
     }

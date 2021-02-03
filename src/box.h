@@ -5,11 +5,8 @@ class Box : public Group {
 public:
     Box(int x, int y, int w, int h, const char *name);
 
-    Measure layout() override;
-    void draw();
-    int handle(int evt);
+    virtual Measure layout() override;
 
     void resize(int x,int y,int w,int h) override;
-
 };
 

@@ -10,5 +10,7 @@ class Window: public SolidBase, virtual public Fl_Double_Window
 
     Measure layout() override;
     void draw()override;
+
+    char *Path() override;
 };
 

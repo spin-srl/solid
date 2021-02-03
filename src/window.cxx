@@ -1,4 +1,5 @@
 #include <cassert>
+#include <Fl/fl_draw.H>
 #include "window.h"
 
 Window::Window(int x, int y, int w, int h, const char *label, const char *name) :
@@ -27,13 +28,22 @@ Measure Window::layout() {
 }
 
 void Window::draw() {
-//    cairo_t *cc = Fl::cairo_make_current(this);
+    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
 
-//    if (cc && refreshLayout) {
-//        layout(cc);
-//        refreshLayout=false;
-//    }
-
+    for (int child_id = 0; child_id < children(); ++child_id) {
+        SolidBase *_child = dynamic_cast<SolidBase *>(child(child_id));
+        if (_child != nullptr) {
+            auto m = _child->layout();
+            printf("Child %s is %fx%f\n", _child->Name, m.Width, m.Height);
+            _child->as_widget()->resize(_child->as_widget()->x(),
+                                        _child->as_widget()->y(),
+                                        (int) m.Width,
+                                        (int) m.Height);
+        }
+    }
     Fl_Window::draw();
 }
 
+char *Window::Path() {
+    return (char *) this->Name;
+}
