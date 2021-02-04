@@ -28,7 +28,7 @@ Measure Window::layout() {
 }
 
 void Window::draw() {
-    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
+//    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
 
     for (int child_id = 0; child_id < children(); ++child_id) {
         SolidBase *_child = dynamic_cast<SolidBase *>(child(child_id));

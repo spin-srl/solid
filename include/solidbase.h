@@ -5,7 +5,7 @@
 #include <Fl/Fl_Group.H>
 #include <Fl/Fl_Window.H>
 #include <Fl/Fl_Button.H>
-#include <cairo/cairo.h>
+#include <cairo.h>
 #include <cassert>
 
 #include "solidskin.h"

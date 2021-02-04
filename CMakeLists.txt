@@ -4,6 +4,9 @@ include(CheckIncludeFile)
 
 CHECK_INCLUDE_FILE("user32.h" IS_WIN)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 option(BUILD_FOR_WINDOWS "Build for windows")
 
 if (IS_WIN OR BUILD_FOR_WINDOWS)
@@ -22,10 +25,12 @@ add_library(${PROJECT_NAME} ${SRCS})
 
 add_executable(app ${SRCS} tests/tests.cpp)
 
-target_compile_definitions(app PUBLIC FLTK_HAVE_CAIRO)
+add_compile_definitions(FLTK_HAVE_CAIRO=1)
 
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 target_include_directories(app PUBLIC "include")
+
+message("Building for " ${TARGET_OS})
 
 if (TARGET_OS STREQUAL "linux")
     target_include_directories(app PUBLIC "/usr/include/cairo")
@@ -41,14 +46,23 @@ if (TARGET_OS STREQUAL "linux")
             cairo
             )
 else ()
+    include("C:/Program Files (x86)/FLTK/CMake/FLTKConfig.cmake" )
+    target_link_directories(app PUBLIC "G:/msys64/mingw64/lib/")
+    target_link_directories(app PUBLIC "G:/msys64/mingw64/bin/")
+
     target_link_libraries(app
-            /Shine/solid/libfltk.a
+            fltk
+            fltk_cairo
             winpthread
             ole32
             uuid
             comctl32
             comdlg32
-            ws2_32)
+            ws2_32
+            )
+
+    include_directories(${FLTK_INCLUDE_DIRS})
+    include_directories(G:/msys64/mingw64/include/cairo)
 endif ()
 
 target_link_libraries(app ${PROJECT_NAME})

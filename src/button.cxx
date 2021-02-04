@@ -2,7 +2,7 @@
 #include "Fl/fl_draw.H"
 #include <Fl/Fl_Group.H>
 #include <Fl/Fl_Cairo.H>
-#include <cairo/cairo.h>
+#include <cairo.h>
 
 Button::Button(int x, int y, int w, int h, const char *label, const char *name) :
         SolidBase(name),
