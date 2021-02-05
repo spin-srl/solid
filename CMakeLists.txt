@@ -11,6 +11,9 @@ endif ()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 option(BUILD_FOR_WINDOWS "Build for windows")
 
 if (IS_WIN OR BUILD_FOR_WINDOWS)
@@ -51,6 +54,7 @@ if (TARGET_OS STREQUAL "linux")
             cairo
             )
 else ()
+
     if (IS_WIN)
         include("C:/Program Files (x86)/FLTK/CMake/FLTKConfig.cmake")
         target_link_directories(app PUBLIC "G:/msys64/mingw64/lib/")
@@ -79,6 +83,7 @@ else ()
         message("INCLUDES: " ${FLTK_INCLUDE_DIRS})
         include_directories(${FLTK_INCLUDE_DIRS})
     endif ()
+
 endif ()
 
 target_link_libraries(app ${PROJECT_NAME})

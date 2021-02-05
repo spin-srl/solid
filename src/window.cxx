@@ -28,7 +28,6 @@ Measure Solid::Window::layout() {
 //
 //    return Measure{w(), h()};
 }
-
 void Solid::Window::draw() {
 //    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
 
