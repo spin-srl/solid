@@ -3,25 +3,28 @@
 #include <Fl/Fl_Button.H>
 #include "solidbase.h"
 
-enum ButtonType {
-    Text,
-    Outline,
-    Primary
-};
+namespace Solid {
 
-class Button : public SolidBase, public Fl_Button {
-public:
-    ButtonType Type = Text;
+    enum ButtonType {
+        Text,
+        Outline,
+        Primary
+    };
 
-    Button(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+    class Button : public SolidBase, public Fl_Button {
+    public:
+        ButtonType Type = Text;
 
-    int handle(int evt) override;
+        Button(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
 
-    void label(const char *l);
+        int handle(int evt) override;
 
-    const char *label();
+        void label(const char *l);
 
-    Measure layout();
+        const char *label();
 
-    void draw() override;
-};
+        Measure layout();
+
+        void draw() override;
+    };
+}

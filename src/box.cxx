@@ -1,6 +1,8 @@
 #include <Fl/fl_draw.H>
 #include "box.h"
 
+using namespace Solid;
+
 Box::Box(int x, int y, int w, int h, const char *name) : Group(x, y, w, h, nullptr, name) {}
 
 Measure Box::layout() {
@@ -44,7 +46,7 @@ Measure Box::layout() {
         offset += (int) (isVertical ? m.Height : m.Width);
         offset += (int) spacing;
 
-        printf("x: %d, y: %d, NewX: %d newY: %d\n", x(), y(), newX, newY);
+//        printf("x: %d, y: %d, NewX: %d newY: %d\n", x(), y(), newX, newY);
         flChild->resize(newX, newY, m.Width, m.Height);
     }
 

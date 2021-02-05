@@ -2,6 +2,8 @@
 #include <Fl/fl_draw.H>
 #include "group.h"
 
+using namespace Solid;
+
 Group::Group(int x, int y, int w, int h, const char *label, const char *name) :
         SolidBase(name),
         Fl_Group(x, y, w, h, label) {

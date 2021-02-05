@@ -4,6 +4,8 @@
 #include <Fl/Fl_Cairo.H>
 #include <cairo.h>
 
+using namespace Solid;
+
 Button::Button(int x, int y, int w, int h, const char *label, const char *name) :
         SolidBase(name),
         Fl_Button(x, y, w, h, label) {

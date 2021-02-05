@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 3.1)
 
 include(CheckIncludeFile)
 
-CHECK_INCLUDE_FILE("user32.h" IS_WIN)
+if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    set(IS_WIN False)
+else ()
+    set(IS_WIN True)
+endif ()
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -15,7 +22,7 @@ else ()
     set(TARGET_OS "linux")
 endif ()
 
-set(PROJECT_NAME "Solid-${TARGET_OS}")
+set(PROJECT_NAME "Solid")
 
 project(${PROJECT_NAME})
 
@@ -33,36 +40,50 @@ target_include_directories(app PUBLIC "include")
 message("Building for " ${TARGET_OS})
 
 if (TARGET_OS STREQUAL "linux")
-    target_include_directories(app PUBLIC "/usr/include/cairo")
-    target_link_libraries(app fltk
+#    include_directories("/usr/include/cairo")
+    target_include_directories(${PROJECT_NAME} PUBLIC "/usr/include/cairo")
+    target_link_libraries(app fltk fltk_cairo
             X11
             Xext
-            Xfixes
+            #            Xfixes
             Xrender
-            Xft
+            #            Xft
             fontconfig
             dl
             pthread
             cairo
             )
 else ()
-    include("C:/Program Files (x86)/FLTK/CMake/FLTKConfig.cmake" )
-    target_link_directories(app PUBLIC "G:/msys64/mingw64/lib/")
-    target_link_directories(app PUBLIC "G:/msys64/mingw64/bin/")
 
-    target_link_libraries(app
-            fltk
-            fltk_cairo
-            winpthread
-            ole32
-            uuid
-            comctl32
-            comdlg32
-            ws2_32
-            )
+    if (IS_WIN)
+        include("C:/Program Files (x86)/FLTK/CMake/FLTKConfig.cmake")
+        target_link_directories(app PUBLIC "G:/msys64/mingw64/lib/")
+        target_link_directories(app PUBLIC "G:/msys64/mingw64/bin/")
 
-    include_directories(${FLTK_INCLUDE_DIRS})
-    include_directories(G:/msys64/mingw64/include/cairo)
+        target_link_libraries(app
+                fltk
+                fltk_cairo
+                winpthread
+                ole32
+                uuid
+                comctl32
+                comdlg32
+                ws2_32
+                )
+
+        include_directories(${FLTK_INCLUDE_DIRS})
+        include_directories(G:/msys64/mingw64/include/cairo)
+    else ()
+        include("/media/ddt/BC2436A224365F96/Softwares/development/FLTK/fltk-windows-debug/FLTKConfig.cmake")
+
+        target_link_libraries(app
+                fltk
+                fltk_cairo
+                )
+        message("INCLUDES: " ${FLTK_INCLUDE_DIRS})
+        include_directories(${FLTK_INCLUDE_DIRS})
+    endif ()
+
 endif ()
 
 target_link_libraries(app ${PROJECT_NAME})
@@ -75,11 +96,13 @@ install(TARGETS ${PROJECT_NAME}
         INCLUDES DESTINATION include
         )
 
-install(FILES "include/Solid.h"
+FILE(GLOB SOLID_INCLUDES include/*.h)
+
+install(FILES ${SOLID_INCLUDES}
         DESTINATION include)
 
 install(EXPORT ${PROJECT_NAME}Targets
-        FILE ${PROJECT_NAME}Targets.cmake
-        NAMESPACE ${PROJECT_NAME}::
+        FILE SolidTargets.cmake
+        NAMESPACE Solid::
         DESTINATION lib/cmake
         )
