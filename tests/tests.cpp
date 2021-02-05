@@ -1,8 +1,10 @@
 #include "solidbase.h"
 #include "window.h"
 #include "button.h"
-#include "../src/box.h"
+#include "box.h"
 #include <Fl/Fl_Input.H>
+
+using namespace Solid;
 
 int main() {
     SolidBase::initialize();

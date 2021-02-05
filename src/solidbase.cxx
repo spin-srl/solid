@@ -3,10 +3,14 @@
 #include "solidbase.h"
 #include "box.h"
 
+using namespace Solid;
+
 bool SolidBase::initialized = false;
 
 SolidBase::SolidBase(const char *name) {
-    assert(name != nullptr);
+//    assert(name != nullptr);
+    if (name==nullptr)
+        name="(null)";
 
     this->Name = name;
 }
