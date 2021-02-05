@@ -1,6 +1,8 @@
 #include "solidskin.h"
 #include "unistd.h"
 
+using namespace Solid;
+
 bool SolidSkin::initialized = false;
 SolidSkin *SolidSkin::current;
 pthread_t SolidSkin::animationThread;
