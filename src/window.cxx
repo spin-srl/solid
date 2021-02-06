@@ -34,7 +34,7 @@ void Solid::Window::show() {
 }
 
 void Solid::Window::draw() {
-    this->cc=Fl::cairo_make_current(this);
+    this->cc = Fl::cairo_make_current(this);
 
     updateLayout();
 

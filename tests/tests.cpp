@@ -12,8 +12,8 @@ int main() {
     auto *mw = new Fl_Window(0, 0, 800, 400, "TestWindow");
     mw->end();
 
-    auto container = new Group(5, 5, mw->w() - 10, mw->h() - 10);
-    auto box = new Box(10, 10, mw->w() - 20, mw->h() - 20, "box0");
+    auto container = new Group(0, 0, mw->w(), mw->h());
+    auto box = new Box(0, 0, mw->w(), mw->h(), "box0");
 
     auto anotherBox = new Box(0, 0, 0, 0, "anotherBox");
     anotherBox->direction = Vertical;
@@ -33,6 +33,12 @@ int main() {
     Button *pButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
     pButton->Expand=true;
     box->add(pButton);
+    Button *qButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
+    qButton->Expand=true;
+    box->add(qButton);
+    Button *rButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
+    rButton->Expand=true;
+    box->add(rButton);
     box->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
     box->add(anotherBox);
 

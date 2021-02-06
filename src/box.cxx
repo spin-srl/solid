@@ -42,11 +42,13 @@ Measure Box::layout() {
         if (isVertical) {
             newY += offset;
             m.Width = std::max(m.Width, w() - this->margin.Horizontal());
+            if (!solidChild->Expand)
             available -= m.Height;
             otherAxis = std::max(otherAxis, m.Width + wholeMargin);
         } else {
             newX += offset;
             m.Height = std::max(m.Height, h() - this->margin.Vertical());
+            if (!solidChild->Expand)
             available -= m.Width;
             otherAxis = std::max(otherAxis, m.Height + wholeMargin);
         }
@@ -57,37 +59,44 @@ Measure Box::layout() {
         flChild->resize(newX, newY, m.Width, m.Height);
     }
 
-    double sliceOfPizza = available / howManyChildrenHasExpandEnabled;
-    for (int child_id = 0; child_id < children(); ++child_id) {
-        auto solidChild = dynamic_cast<SolidBase *>(child(child_id));
-        auto widget = child(child_id);
-        int newW = widget->w(), newH = widget->h();
+    if (howManyChildrenHasExpandEnabled > 0) {
+        //(SpaceLeft - totalSeparationOfWidgets)/howManyWidgets
 
-        if (howManyChildrenHasExpandEnabled > 0 && solidChild && solidChild->Expand &&
-            sliceOfPizza > widget->w()) {
-            if (isVertical)
-                newH = (int) sliceOfPizza;
-            else
-                newW = (int) sliceOfPizza;
+        double sliceOfPizza =
+                available/howManyChildrenHasExpandEnabled;
+//                (available - spacing * (howManyChildrenHasExpandEnabled - 1)) / howManyChildrenHasExpandEnabled;
+
+        for (int child_id = 0; child_id < children(); ++child_id) {
+            auto solidChild = dynamic_cast<SolidBase *>(child(child_id));
+            auto widget = child(child_id);
+            int newW = widget->w(), newH = widget->h();
+
+            if (solidChild && solidChild->Expand &&
+                sliceOfPizza > widget->w()) {
+                if (isVertical)
+                    newH = (int) sliceOfPizza;
+                else
+                    newW = (int) sliceOfPizza;
+            }
+
+            int newPos = (int) (isVertical ? y() + margin.top : x() + margin.left);
+            if (child_id > 0) {
+                Fl_Widget *prevChild = child(child_id - 1);
+                newPos = spacing + (isVertical ? (prevChild->y() + prevChild->h()) : (prevChild->x() +
+                                                                                      prevChild->w()));
+            }
+
+            if (isVertical) {
+                widget->resize(widget->x(), newPos, newW, newH);
+            } else {
+                widget->resize(newPos, widget->y(), newW, newH);
+            }
         }
 
-        int newPos = (int) (isVertical ? y() + margin.top : x() + margin.left);
-        if (child_id > 0) {
-            Fl_Widget *prevChild = child(child_id - 1);
-            newPos += (int) (child_id * spacing) + isVertical ? (prevChild->y() + prevChild->h()) : (prevChild->x() +
-                                                                                                     prevChild->w());
-        }
-
-        if (isVertical) {
-            widget->resize(widget->x(), newPos, newW, newH);
-        } else {
-            widget->resize(newPos, widget->y(), newW, newH);
-        }
+        //Reset available if greater than zero and there were widgets to fill the space
+        if (available > 0)
+            available = 0;
     }
-
-    //Reset available if greater than zero and there were widgets to fill the space
-    if (howManyChildrenHasExpandEnabled > 0 && available > 0)
-        available = 0;
 
     int growX = 0;
     int growY = 0;

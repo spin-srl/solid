@@ -73,10 +73,10 @@ namespace Solid {
         ///Name of the widget, used for runtime widget identification
         const char *Name;
 
-        bool Expand=false;
+        bool Expand = false;
 
         ///Assignable destroy callback
-        void (*onDestroy)(SolidBase *w)= nullptr;
+        void (*onDestroy)(SolidBase *w) = nullptr;
 
         SolidBase(const char *name);
 
@@ -116,10 +116,10 @@ namespace Solid {
 
         ///Widget's properties for layout stuffs
         BoxAlign boxAlign = Center;
-        Margins margin{};
+        Margins margin{5,5,5,5};
         Padding padding{};
         Direction direction = Horizontal;
-        double spacing = 0;
+        double spacing = 5;
 
         ///refreshLayout stands for 'Should the library refresh the layout so the user doesn't have to move a finger'
         bool refreshLayout = true;
@@ -129,7 +129,7 @@ namespace Solid {
         ///their preferences, and return the target size instead of the current one
         virtual Measure layout();
 
-        cairo_t* get_cc();
+        cairo_t *get_cc();
     };
 
     inline void set_cairo_color(cairo_t *cc, Fl_Color c) {

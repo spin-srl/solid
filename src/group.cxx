@@ -18,7 +18,7 @@ void Group::resize(int x, int y, int w, int h) {
 void Group::draw() {
     layout();
 
-    cairo_t *cc = Fl::cairo_cc();
+    cairo_t *cc = get_cc();
 
     if (cc) {
         cairo_rectangle(cc, parent()->x(), parent()->y(), parent()->w(), parent()->h());
@@ -29,7 +29,6 @@ void Group::draw() {
         cairo_fill(cc);
     }
 
-//    Fl_Group::draw();
     for (int i = 0; i < children(); ++i) {
         child(i)->draw();
     }
