@@ -11,8 +11,13 @@ namespace Solid {
         Measure layout() override;
 
         void draw() override;
-
+        void resize(int x,int y,int w,int h)override;
         char *Path() override;
+
+        void updateLayout() const;
+
+        cairo_t* cc;
+        void show() override;
     };
 }
 

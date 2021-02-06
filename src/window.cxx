@@ -1,4 +1,3 @@
-#include <cassert>
 #include <Fl/fl_draw.H>
 #include "window.h"
 
@@ -29,9 +28,20 @@ Measure Solid::Window::layout() {
 //    return Measure{w(), h()};
 }
 
-void Solid::Window::draw() {
-//    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
+void Solid::Window::show() {
+    updateLayout();
+    Fl_Double_Window::show();
+}
 
+void Solid::Window::draw() {
+    this->cc=Fl::cairo_make_current(this);
+
+    updateLayout();
+
+    Fl_Double_Window::draw();
+}
+
+void Solid::Window::updateLayout() const {
     for (int child_id = 0; child_id < children(); ++child_id) {
         auto _child = dynamic_cast<SolidBase *>(child(child_id));
         if (_child != nullptr) {
@@ -43,9 +53,12 @@ void Solid::Window::draw() {
                                         (int) m.Height);
         }
     }
-    Fl_Window::draw();
 }
 
 char *Solid::Window::Path() {
     return (char *) this->Name;
+}
+
+void Solid::Window::resize(int x, int y, int w, int h) {
+    Fl_Double_Window::resize(x, y, w, h);
 }

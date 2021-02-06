@@ -12,6 +12,7 @@
 
 namespace Solid {
 
+
 /// This enum holds the Align options for every widget
     enum BoxAlign {
         Start,
@@ -72,8 +73,10 @@ namespace Solid {
         ///Name of the widget, used for runtime widget identification
         const char *Name;
 
+        bool Expand=false;
+
         ///Assignable destroy callback
-        void (*onDestroy)(SolidBase *w);
+        void (*onDestroy)(SolidBase *w)= nullptr;
 
         SolidBase(const char *name);
 
@@ -125,5 +128,13 @@ namespace Solid {
         ///Subsequent implementations(overrides) of this method can take into account children widgets and
         ///their preferences, and return the target size instead of the current one
         virtual Measure layout();
+
+        cairo_t* get_cc();
     };
+
+    inline void set_cairo_color(cairo_t *cc, Fl_Color c) {
+        uchar r, g, b;
+        Fl::get_color(c, r, g, b);
+        cairo_set_source_rgb(cc, r / 255.0, g / 255.0, b / 255.0);
+    }
 }

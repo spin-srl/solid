@@ -42,16 +42,15 @@ inline void round_rect(cairo_t *cc, int x, int y, int w, int h, double r) {
     cairo_line_to(cc, x, y + r);
 }
 
-inline void set_cairo_color(cairo_t *cc, Fl_Color c) {
-    uchar r, g, b;
-    Fl::get_color(c, r, g, b);
-    cairo_set_source_rgb(cc, r / 255.0, g / 255.0, b / 255.0);
-}
-
 void Button::draw() {
-    cairo_t *cc = Fl::cairo_make_current(Fl::first_window());
+    cairo_t *cc = get_cc();
 
-    fl_rectf(x(), y(), w(), h(), SolidSkin::current->Surface);
+    cairo_rectangle(cc, parent()->x(), parent()->y(), parent()->w(), parent()->h());
+    cairo_clip(cc);
+
+    cairo_rectangle(cc, x(), y(), w(), h());
+    set_cairo_color(cc, SolidSkin::current->Surface);
+    cairo_fill(cc);
 
     bool hovered = Fl::belowmouse() == this;
     bool clicked = Fl::event_button1();
@@ -59,15 +58,15 @@ void Button::draw() {
     Fl_Color textcolor = hovered ? fl_lighter(SolidSkin::current->Primary) : SolidSkin::current->Primary;
 
     switch (Type) {
-        case Outline:
-            Fl_Color outlinecolor;
+        case ButtonType::Outline:
+            Fl_Color outlineColor;
             Fl_Color target;
 
-            outlinecolor = SolidSkin::current->Surface;
+            outlineColor = SolidSkin::current->Surface;
             target = fl_contrast(FL_WHITE, SolidSkin::current->Surface);
 
-            outlinecolor = fl_color_average(outlinecolor, target, 0.8);
-            set_cairo_color(cc, outlinecolor);
+            outlineColor = fl_color_average(outlineColor, target, 0.8);
+            set_cairo_color(cc, outlineColor);
             cairo_set_line_width(cc, 0.6);
 
             round_rect(cc, x(), y(), w(), h(), 2);
@@ -76,7 +75,7 @@ void Button::draw() {
 
             break;
 
-        case Primary:
+        case ButtonType::Primary:
             textcolor = hovered ? fl_lighter(SolidSkin::current->OnPrimary) : SolidSkin::current->OnPrimary;
             Fl_Color clickedcolor;
             clickedcolor = clicked ? fl_darker(SolidSkin::current->Primary) : fl_lighter(SolidSkin::current->Primary);
@@ -88,11 +87,11 @@ void Button::draw() {
 
             cairo_fill(cc);
             break;
-        case Text:
+        case ButtonType::Text:
             break;
     }
 
-    if (Type != Primary && hovered && clicked) {
+    if (Type != ButtonType::Primary && hovered && clicked) {
         textcolor = fl_darker(textcolor);
     }
 
@@ -117,6 +116,7 @@ void Button::draw() {
 }
 
 #include "ctype.h"
+#include "solidbase.h"
 
 void Button::label(const char *l) {
     if (l == nullptr)return;
@@ -147,4 +147,22 @@ Measure Button::layout() {
 
     return Measure{20 + static_cast<int>(extents.width + padding.Horizontal()),
                    15 + static_cast<int>(extents.height + padding.Vertical())};
+}
+
+Button *Button::Primary(int x, int y, int w, int h, const char *label, const char *name) {
+    auto b = new Button(x, y, w, h, label, name);
+    b->Type = ButtonType::Primary;
+    return b;
+}
+
+Button *Button::Outline(int x, int y, int w, int h, const char *label, const char *name) {
+    auto b = new Button(x, y, w, h, label, name);
+    b->Type = ButtonType::Outline;
+    return b;
+}
+
+Button *Button::Text(int x, int y, int w, int h, const char *label, const char *name) {
+    auto b = new Button(x, y, w, h, label, name);
+    b->Type = ButtonType::Text;
+    return b;
 }

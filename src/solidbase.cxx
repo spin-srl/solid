@@ -1,7 +1,13 @@
+#include "ctype.h"
+#include <cairo.h>
+#include <Fl/Fl_Cairo.H>
+#include <Fl/Fl_Group.H>
+#include "button.h"
 #include <Fl/fl_draw.H>
 #include <string>
 #include "solidbase.h"
 #include "box.h"
+#include "window.h"
 
 using namespace Solid;
 
@@ -9,8 +15,8 @@ bool SolidBase::initialized = false;
 
 SolidBase::SolidBase(const char *name) {
 //    assert(name != nullptr);
-    if (name==nullptr)
-        name="(null)";
+    if (name == nullptr)
+        name = "(null)";
 
     this->Name = name;
 }
@@ -173,3 +179,10 @@ Measure SolidBase::layout() {
     return Measure{as_widget()->w(), as_widget()->h()};
 }
 
+cairo_t *SolidBase::get_cc() {
+    Fl_Widget *w = as_widget();
+    while (w->parent() != nullptr)
+        w = w->parent();
+    auto *window = dynamic_cast<Solid::Window *>(w);
+    return window == nullptr ? Fl::cairo_make_current(w->as_window()) : window->cc;
+}

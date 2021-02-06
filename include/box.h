@@ -1,4 +1,6 @@
-#include <group.h>
+#pragma once
+
+#include "group.h"
 #include "solidbase.h"
 
 namespace Solid {
@@ -9,5 +11,6 @@ namespace Solid {
         virtual Measure layout() override;
 
         void resize(int x, int y, int w, int h) override;
+        void draw();
     };
 }

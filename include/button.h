@@ -13,7 +13,7 @@ namespace Solid {
 
     class Button : public SolidBase, public Fl_Button {
     public:
-        ButtonType Type = Text;
+        ButtonType Type = ButtonType::Text;
 
         Button(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
 
@@ -26,5 +26,11 @@ namespace Solid {
         Measure layout();
 
         void draw() override;
+
+        static Button *Primary(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+
+        static Button *Outline(int x, int y, int w, int h, const char *label, const char *name);
+
+        static Button *Text(int x, int y, int w, int h, const char *label, const char *name);
     };
 }

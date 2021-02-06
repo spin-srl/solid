@@ -17,7 +17,7 @@ namespace Solid {
 //    Fl_Color Primary=fl_rgb_color(0x2a,0x4c,0xf8);
 //    Fl_Color OnPrimary=FL_BLACK;
 
-//    Fl_Color Secondary=fl_rgb_color(0xf8,0x70,0x2a);
+//    Fl_Color Outline=fl_rgb_color(0xf8,0x70,0x2a);
 //    Fl_Color OnSecondary=FL_BLACK;
 
 //    Fl_Color Surface=FL_BLACK;
