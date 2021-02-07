@@ -70,9 +70,9 @@ Measure Box::layout() {
             auto solidChild = dynamic_cast<SolidBase *>(child(child_id));
             auto widget = child(child_id);
             int newW = widget->w(), newH = widget->h();
-
+            int minsize=isVertical?widget->h():widget->w();
             if (solidChild && solidChild->Expand &&
-                sliceOfPizza > widget->w()) {
+                sliceOfPizza > minsize) {
                 if (isVertical)
                     newH = (int) sliceOfPizza;
                 else
@@ -128,4 +128,5 @@ void Box::resize(int x, int y, int w, int h) {
 
 void Box::draw() {
     Group::draw();
+    debugDraw();
 }

@@ -116,7 +116,7 @@ namespace Solid {
 
         ///Widget's properties for layout stuffs
         BoxAlign boxAlign = Center;
-        Margins margin{5,5,5,5};
+        Margins margin{5, 5, 5, 5};
         Padding padding{};
         Direction direction = Horizontal;
         double spacing = 5;
@@ -131,6 +131,8 @@ namespace Solid {
 
         cairo_t *get_cc();
     };
+
+    cairo_text_extents_t calcExtents(cairo_t *cc, const char *text);
 
     inline void set_cairo_color(cairo_t *cc, Fl_Color c) {
         uchar r, g, b;

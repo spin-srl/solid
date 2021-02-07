@@ -28,19 +28,6 @@ int Button::handle(int evt) {
     return Fl_Button::handle(evt);
 }
 
-const double degree_to_radian = 3.14159265358979 / 180.0;
-
-inline void round_rect(cairo_t *cc, int x, int y, int w, int h, double r) {
-    cairo_move_to(cc, x, y + r);
-    cairo_arc(cc, x + r, y + r, r, 180 * degree_to_radian, 270 * degree_to_radian);
-    cairo_line_to(cc, x + w - r, y);
-    cairo_arc(cc, x + w - r, y + r, r, -90 * degree_to_radian, 0 * degree_to_radian);
-    cairo_line_to(cc, x + w, y + h - r);
-    cairo_arc(cc, x + w - r, y + h - r, r, 0 * degree_to_radian, 90 * degree_to_radian);
-    cairo_line_to(cc, x + r, y + h);
-    cairo_arc(cc, x + r, y + h - r, r, 90 * degree_to_radian, 180 * degree_to_radian);
-    cairo_line_to(cc, x, y + r);
-}
 
 void Button::draw() {
     cairo_t *cc = get_cc();
@@ -55,32 +42,16 @@ void Button::draw() {
     bool hovered = Fl::belowmouse() == this;
     bool clicked = Fl::event_button1();
 
-    Fl_Color textcolor = hovered ? fl_lighter(SolidSkin::current->Primary) : SolidSkin::current->Primary;
-
     switch (Type) {
         case ButtonType::Outline:
-            Fl_Color outlineColor;
-            Fl_Color target;
-
-            outlineColor = SolidSkin::current->Surface;
-            target = fl_contrast(FL_WHITE, SolidSkin::current->Surface);
-
-            outlineColor = fl_color_average(outlineColor, target, 0.8);
-            set_cairo_color(cc, outlineColor);
+            set_cairo_color(cc, outlineColor());
             cairo_set_line_width(cc, 0.6);
-
             round_rect(cc, x(), y(), w(), h(), 2);
-
             cairo_stroke(cc);
-
             break;
 
         case ButtonType::Primary:
-            textcolor = hovered ? fl_lighter(SolidSkin::current->OnPrimary) : SolidSkin::current->OnPrimary;
-            Fl_Color clickedcolor;
-            clickedcolor = clicked ? fl_darker(SolidSkin::current->Primary) : fl_lighter(SolidSkin::current->Primary);
-            clickedcolor = hovered ? clickedcolor : SolidSkin::current->Primary;
-            set_cairo_color(cc, clickedcolor);
+            set_cairo_color(cc, buttonColor());
             cairo_set_line_width(cc, 0.1);
 
             round_rect(cc, x(), y(), w(), h(), 2);
@@ -91,11 +62,7 @@ void Button::draw() {
             break;
     }
 
-    if (Type != ButtonType::Primary && hovered && clicked) {
-        textcolor = fl_darker(textcolor);
-    }
-
-    set_cairo_color(cc, textcolor);
+    set_cairo_color(cc, textColor());
 
     auto font = SolidSkin::fonts[1];
 
@@ -137,7 +104,6 @@ Measure Button::layout() {
 
     auto cc = Fl::cairo_cc();
     if (cc == nullptr || label() == nullptr) {
-        printf("NOT Found!\n");
         return Measure{w(), h()};
     }
 
@@ -165,4 +131,51 @@ Button *Button::Text(int x, int y, int w, int h, const char *label, const char *
     auto b = new Button(x, y, w, h, label, name);
     b->Type = ButtonType::Text;
     return b;
+}
+
+Fl_Color Button::buttonColor() {
+    switch (Type) {
+        case ButtonType::Text:
+        case ButtonType::Outline:
+            return SolidSkin::current->Surface;
+        default:
+            break;
+    }
+
+    bool hovered = Fl::belowmouse() == this;
+    bool clicked = hovered && Fl::event_button1();
+
+    Fl_Color ret = clicked ? fl_darker(SolidSkin::current->Primary) : fl_lighter(SolidSkin::current->Primary);
+    ret = hovered ? ret : SolidSkin::current->Primary;
+    return ret;
+}
+
+Fl_Color Button::outlineColor() {
+    auto ret = SolidSkin::current->Surface;
+    Fl_Color target;
+
+    ret = SolidSkin::current->Surface;
+    target = fl_contrast(FL_WHITE, SolidSkin::current->Surface);
+
+    ret = fl_color_average(ret, target, 0.8);
+
+    return ret;
+}
+
+Fl_Color Button::textColor() {
+    Fl_Color ret;
+    bool hovered = Fl::belowmouse() == this;
+    bool clicked = hovered && Fl::event_button1();
+
+    if (Type == ButtonType::Primary) {
+        ret = Fl::belowmouse() == this ? fl_lighter(SolidSkin::current->OnPrimary)
+                                       : SolidSkin::current->OnPrimary;
+    } else {
+        ret = Fl::belowmouse() == this ? fl_lighter(SolidSkin::current->Primary)
+                                       : SolidSkin::current->Primary;
+    }
+    if (Type != ButtonType::Primary && hovered && clicked) {
+        ret = fl_darker(ret);
+    }
+    return ret;
 }

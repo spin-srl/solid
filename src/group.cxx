@@ -20,8 +20,13 @@ void Group::draw() {
 
     cairo_t *cc = get_cc();
 
+//    cairo_matrix_t matrix;
+//    cairo_get_matrix(cc,&matrix);
+//    cairo_matrix_translate(&matrix,0,50);
+//    cairo_set_matrix(cc,&matrix);
+
     if (cc) {
-        cairo_rectangle(cc, parent()->x(), parent()->y(), parent()->w(), parent()->h());
+        cairo_rectangle(cc, x(), y(), w(), h());
         cairo_clip(cc);
 
         set_cairo_color(cc, SolidSkin::current->Surface);

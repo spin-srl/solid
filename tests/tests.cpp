@@ -3,13 +3,16 @@
 #include "button.h"
 #include "box.h"
 #include <Fl/Fl_Input.H>
+#include <dropdown.h>
 
 using namespace Solid;
 
 int main() {
+    printf("FLTK VERSION: %f/%d\n",Fl::version(), Fl::abi_version());
+
     SolidBase::initialize();
 
-    auto *mw = new Fl_Window(0, 0, 800, 400, "TestWindow");
+    auto *mw = new Window(0, 0, 800, 400, "TestWindow");
     mw->end();
 
     auto container = new Group(0, 0, mw->w(), mw->h());
@@ -19,11 +22,17 @@ int main() {
     anotherBox->direction = Vertical;
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
-    anotherBox->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
+    auto dropDown = new Solid::DropDown(0, 0, 0, 0, "Test", "DDOWN");
+    dropDown->Options = new std::vector<char*>();
+    dropDown->Options->push_back("Test");
+    dropDown->Options->push_back("Test 2");
+    dropDown->Options->push_back("Test 3");
+    dropDown->selectedIndex=1;
+    anotherBox->add(dropDown);
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     Button *o = Button::Outline(0, 0, 100, 100, "Test_1", "qb");
     anotherBox->add(o);
-    o->Expand=true;
+    o->Expand = true;
     anotherBox->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
@@ -31,13 +40,13 @@ int main() {
 
     box->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     Button *pButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
-    pButton->Expand=true;
+    pButton->Expand = true;
     box->add(pButton);
     Button *qButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
-    qButton->Expand=true;
+    qButton->Expand = true;
     box->add(qButton);
     Button *rButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
-    rButton->Expand=true;
+    rButton->Expand = true;
     box->add(rButton);
     box->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
     box->add(anotherBox);
