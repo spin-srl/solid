@@ -22,22 +22,22 @@ Solid::Window::Window(int x, int y, int w, int h, const char *label, const char 
     this->Content->clip_children(1);
     Fl_Double_Window::resizable(this->Content);
     Fl_Double_Window::add(this->Content);
-
-    surf = cairo_image_surface_create(cairo_format_t::CAIRO_FORMAT_A8, WW, WH);
-    scc = cairo_create(surf);
-
-    cairo_set_source_rgb(scc, 0, 0, 0);
-    cairo_rectangle(scc, -1, -1, WW + 2, WH + 2);
-    cairo_stroke(scc);
-
-    cairo_set_source_rgb(scc, 1, 1, 1);
-    round_rect(scc, 0, 0, WW, WH, 5);
-    cairo_fill(scc);
-
-    cairo_surface_flush(surf);
-
-    windowShapeImage = new Fl_RGB_Image(cairo_image_surface_get_data(surf), WW, WH, 1);
-    shape(windowShapeImage);
+//
+//    surf = cairo_image_surface_create(cairo_format_t::CAIRO_FORMAT_A8, WW, WH);
+//    scc = cairo_create(surf);
+//
+//    cairo_set_source_rgb(scc, 0, 0, 0);
+//    cairo_rectangle(scc, -1, -1, WW + 2, WH + 2);
+//    cairo_stroke(scc);
+//
+//    cairo_set_source_rgb(scc, 1, 1, 1);
+//    round_rect(scc, 0, 0, WW, WH, 5);
+//    cairo_fill(scc);
+//
+//    cairo_surface_flush(surf);
+//
+//    windowShapeImage = new Fl_RGB_Image(cairo_image_surface_get_data(surf), WW, WH, 1);
+//    shape(windowShapeImage);
 }
 
 Measure Solid::Window::layout() {
@@ -105,17 +105,17 @@ char *Solid::Window::Path() {
 }
 
 void Solid::Window::resize(int x, int y, int w, int h) {
-    int requiredWidth = 0;
-    int requiredHeight = 0;
-    for (int i = 0; i < Content->children(); ++i) {
-        auto c = Content->child(i);
-        requiredWidth += c->w();
-        requiredHeight += c->h();
-    }
-    requiredWidth += this->padding.Horizontal();
-    if (requiredWidth > w) {
-        w = requiredWidth;
-    }
+//    int requiredWidth = 0;
+//    int requiredHeight = 0;
+//    for (int i = 0; i < Content->children(); ++i) {
+//        auto c = Content->child(i);
+//        requiredWidth += c->w();
+//        requiredHeight += c->h();
+//    }
+//    requiredWidth += this->padding.Horizontal();
+//    if (requiredWidth > w) {
+//        w = requiredWidth;
+//    }
 
     Fl_Double_Window::resize(x, y, w, h);
 

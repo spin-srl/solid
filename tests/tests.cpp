@@ -1,9 +1,4 @@
-#include "solidbase.h"
-#include "window.h"
-#include "button.h"
-#include "box.h"
-#include <Fl/Fl_Input.H>
-#include <dropdown.h>
+#include "solid.h"
 
 using namespace Solid;
 
@@ -29,6 +24,7 @@ int main() {
     dropDown->Options->push_back("Test 3");
     dropDown->selectedIndex=1;
     anotherBox->add(dropDown);
+    anotherBox->add(new CheckBox(0,0,200,25,"Test Check"));
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     Button *o = Button::Outline(0, 0, 100, 100, "Test_1", "qb");
     anotherBox->add(o);

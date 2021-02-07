@@ -12,5 +12,7 @@
 #include "group.h"
 #include "box.h"
 #include "button.h"
+#include "dropdown.h"
+#include "checkbox.h"
 
 #endif //SOLID_SOLID_H

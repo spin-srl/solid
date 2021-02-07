@@ -19,7 +19,7 @@ namespace Solid {
         Button(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
         int handle(int evt) override;
 
-        void label(const char *l);
+        virtual void label(const char *l);
 
         const char *label();
 

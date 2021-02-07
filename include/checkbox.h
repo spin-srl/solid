@@ -6,14 +6,21 @@
 #define SOLID_CHECKBOX_H
 
 #include "solidbase.h"
-#include <Fl/Fl_Check_Button.H>
+#include "button.h"
+#include <FL/Fl_Check_Button.H>
 
 namespace Solid {
-    class CheckBox : public SolidBase, public Fl_Check_Button {
+    class CheckBox : public Button {
     public:
-        CheckBox(int x, int y, int w, int h, const char *label, const char *name) : Fl_Check_Button(x, y, w, h, label),
-                                                                                    SolidBase(name) {
-        }
+        CheckBox(int x, int y, int w, int h, const char *label, const char *name = nullptr);
+
+        void draw();
+
+        Measure layout() override;
+
+        void label(const char *label) override;
+
+        const char *label();;
     };
 }
 

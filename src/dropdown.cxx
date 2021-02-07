@@ -43,7 +43,6 @@ public:
             Fl_Window(dd->x(), dd->y(), dd->w(), dd->Options->size() * 25) {
 
         clear_border();
-//        shape(roundshape(w(), h(), 5));
 
         this->dd = dd;
     }
