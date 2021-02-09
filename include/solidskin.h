@@ -15,7 +15,7 @@ namespace Solid {
 
         static std::vector<cairo_font_face_t *> fonts;
 
-#define DARK_MODE
+//#define DARK_MODE
 #ifdef DARK_MODE
         Fl_Color Primary=fl_rgb_color(0x2a,0x4c,0xf8);
         Fl_Color OnPrimary=FL_BLACK;

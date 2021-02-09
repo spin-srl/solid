@@ -22,7 +22,9 @@ Solid::Window::Window(int x, int y, int w, int h, const char *label, const char 
     this->Content->clip_children(1);
     Fl_Double_Window::resizable(this->Content);
     Fl_Double_Window::add(this->Content);
-//
+    Fl_Group::current(this->Content);
+    this->Content->begin();
+
 //    surf = cairo_image_surface_create(cairo_format_t::CAIRO_FORMAT_A8, WW, WH);
 //    scc = cairo_create(surf);
 //
@@ -51,6 +53,11 @@ void Solid::Window::show() {
 void Solid::Window::draw() {
     this->cc = Fl::cairo_make_current(this);
 
+    //Clear  background
+    cairo_rectangle(cc, 0, 0, Fl_Double_Window::w(), titleHeight);
+    set_cairo_color(cc, SolidSkin::current->Surface);
+    cairo_fill(cc);
+
     updateLayout();
 
     ///Content
@@ -61,11 +68,6 @@ void Solid::Window::draw() {
     ///Decorators
     //////////////////////////////////
     cairo_reset_clip(cc);
-
-    //Clear  background
-    cairo_rectangle(cc, 0, 0, Fl_Double_Window::w(), titleHeight);
-    set_cairo_color(cc, SolidSkin::current->Surface);
-    cairo_fill(cc);
 
     //Set font properties
     cairo_set_font_face(cc, TitleFont);

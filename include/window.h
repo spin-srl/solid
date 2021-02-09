@@ -5,7 +5,7 @@
 #include "box.h"
 
 namespace Solid {
-    class Window : public SolidBase, virtual public Fl_Double_Window {
+    class Window : public SolidBase, public Fl_Double_Window {
         Group *Content;
         Group *TitleBar;
 

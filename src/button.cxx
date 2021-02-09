@@ -32,8 +32,8 @@ int Button::handle(int evt) {
 void Button::draw() {
     cairo_t *cc = get_cc();
 
-    cairo_rectangle(cc, parent()->x(), parent()->y(), parent()->w(), parent()->h());
-    cairo_clip(cc);
+//    cairo_rectangle(cc, parent()->x(), parent()->y(), parent()->w(), parent()->h());
+//    cairo_clip(cc);
 
     cairo_rectangle(cc, x(), y(), w(), h());
     set_cairo_color(cc, SolidSkin::current->Surface);
@@ -145,8 +145,23 @@ Fl_Color Button::buttonColor() {
     bool hovered = Fl::belowmouse() == this;
     bool clicked = hovered && Fl::event_button1();
 
+    if (!active()) {
+        hovered = false;
+        clicked = false;
+    }
+
     Fl_Color ret = clicked ? fl_darker(SolidSkin::current->Primary) : fl_lighter(SolidSkin::current->Primary);
     ret = hovered ? ret : SolidSkin::current->Primary;
+
+    if (!active()) {
+        uchar r, g, b;
+
+        Fl::get_color(ret, r, g, b);
+
+        float sum = r + g + b;
+        ret = fl_gray_ramp(sum / 3.0);
+    }
+
     return ret;
 }
 
@@ -167,15 +182,30 @@ Fl_Color Button::textColor() {
     bool hovered = Fl::belowmouse() == this;
     bool clicked = hovered && Fl::event_button1();
 
+    if (!active()) {
+        hovered = false;
+        clicked = false;
+    }
+
     if (Type == ButtonType::Primary) {
-        ret = Fl::belowmouse() == this ? fl_lighter(SolidSkin::current->OnPrimary)
-                                       : SolidSkin::current->OnPrimary;
+        ret = hovered ? fl_lighter(SolidSkin::current->OnPrimary)
+                      : SolidSkin::current->OnPrimary;
     } else {
-        ret = Fl::belowmouse() == this ? fl_lighter(SolidSkin::current->Primary)
-                                       : SolidSkin::current->Primary;
+        ret = hovered ? fl_lighter(SolidSkin::current->Primary)
+                      : SolidSkin::current->Primary;
     }
     if (Type != ButtonType::Primary && hovered && clicked) {
         ret = fl_darker(ret);
     }
+
+    if (!active()) {
+        uchar r, g, b;
+
+        Fl::get_color(ret, r, g, b);
+
+        float sum = r + g + b;
+        ret = fl_gray_ramp(sum / 3.0);
+    }
+
     return ret;
 }

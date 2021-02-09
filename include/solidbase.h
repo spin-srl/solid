@@ -129,6 +129,8 @@ namespace Solid {
         ///their preferences, and return the target size instead of the current one
         virtual Measure layout();
 
+        Measure measureText(cairo_t *cc, const char *text, int font, int size);
+
         cairo_t *get_cc();
     };
 

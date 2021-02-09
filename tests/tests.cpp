@@ -3,12 +3,16 @@
 using namespace Solid;
 
 int main() {
-    printf("FLTK VERSION: %f/%d\n",Fl::version(), Fl::abi_version());
+    printf("FLTK VERSION: %f/%d\n", Fl::version(), Fl::abi_version());
 
     SolidBase::initialize();
 
     auto *mw = new Window(0, 0, 800, 400, "TestWindow");
-    mw->end();
+
+    Button::Primary(5,5,100,25,"Test");
+
+    mw->show();
+    return Fl::run();
 
     auto container = new Group(0, 0, mw->w(), mw->h());
     auto box = new Box(0, 0, mw->w(), mw->h(), "box0");
@@ -18,13 +22,19 @@ int main() {
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
     auto dropDown = new Solid::DropDown(0, 0, 0, 0, "Test", "DDOWN");
-    dropDown->Options = new std::vector<char*>();
+    dropDown->Options = new std::vector<char *>();
     dropDown->Options->push_back("Test");
     dropDown->Options->push_back("Test 2");
     dropDown->Options->push_back("Test 3");
-    dropDown->selectedIndex=1;
+    dropDown->selectedIndex = 1;
     anotherBox->add(dropDown);
-    anotherBox->add(new CheckBox(0,0,200,25,"Test Check"));
+    anotherBox->add(new CheckBox(0, 0, 200, 25, "Test Check"));
+
+    TextField *textField = new TextField(0, 0, 200, 25, "Simple Text Field:");
+    textField->value("This is a fucking test only");
+    textField->placeholder = "This is some test Text";
+
+    anotherBox->add(textField);
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     Button *o = Button::Outline(0, 0, 100, 100, "Test_1", "qb");
     anotherBox->add(o);

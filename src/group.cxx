@@ -34,7 +34,7 @@ void Group::draw() {
         cairo_fill(cc);
     }
 
-    for (int i = 0; i < children(); ++i) {
+    for (int i = 0; i < children(); i++) {
         child(i)->draw();
     }
 }

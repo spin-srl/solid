@@ -129,7 +129,7 @@ namespace Solid {
         cairo_set_source_rgba(cc, 1, 0, 0, 0.5);
         cairo_set_line_width(cc, 1);
 
-        cairo_rectangle(cc, w->x()+1, w->y()+1, w->w()-2, w->h()-2);
+        cairo_rectangle(cc, w->x() + 1, w->y() + 1, w->w() - 2, w->h() - 2);
         cairo_stroke(cc);
 
         return;
@@ -163,6 +163,8 @@ namespace Solid {
     }
 
     bool SolidBase::initialize() {
+        Fl::lock();
+
         if (initialized)
             return false;
 
@@ -184,6 +186,19 @@ namespace Solid {
             w = w->parent();
         auto *window = dynamic_cast<Solid::Window *>(w);
         return window == nullptr ? Fl::cairo_make_current(w->as_window()) : window->cc;
+    }
+
+    Measure SolidBase::measureText(cairo_t *cc, const char *text, int font, int size) {
+        cairo_text_extents_t extents;
+
+        cairo_set_font_size(cc, size);
+        cairo_set_font_face(cc, SolidSkin::fonts[font]);
+        cairo_text_extents(cc, text, &extents);
+
+        return Measure{
+                static_cast<int>(extents.x_advance),
+                static_cast<int>(extents.height)
+        };
     }
 
     cairo_text_extents_t calcExtents(cairo_t *cc, const char *text) {
