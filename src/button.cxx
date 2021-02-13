@@ -15,6 +15,9 @@ Button::Button(int x, int y, int w, int h, const char *label, const char *name) 
 }
 
 int Button::handle(int evt) {
+    if (!active_r())
+        return 0;
+
     switch (evt) {
         case FL_PUSH:
         case FL_RELEASE:
@@ -39,12 +42,10 @@ void Button::draw() {
     set_cairo_color(cc, SolidSkin::current->Surface);
     cairo_fill(cc);
 
-    bool hovered = Fl::belowmouse() == this;
-    bool clicked = Fl::event_button1();
-
     switch (Type) {
         case ButtonType::Outline:
             set_cairo_color(cc, outlineColor());
+
             cairo_set_line_width(cc, 0.6);
             round_rect(cc, x(), y(), w(), h(), 2);
             cairo_stroke(cc);
@@ -52,12 +53,12 @@ void Button::draw() {
 
         case ButtonType::Primary:
             set_cairo_color(cc, buttonColor());
+
             cairo_set_line_width(cc, 0.1);
-
             round_rect(cc, x(), y(), w(), h(), 2);
-
             cairo_fill(cc);
             break;
+
         case ButtonType::Text:
             break;
     }
@@ -134,6 +135,9 @@ Button *Button::Text(int x, int y, int w, int h, const char *label, const char *
 }
 
 Fl_Color Button::buttonColor() {
+    if (!active_r())
+        return FL_GRAY;
+
     switch (Type) {
         case ButtonType::Text:
         case ButtonType::Outline:
@@ -182,9 +186,10 @@ Fl_Color Button::textColor() {
     bool hovered = Fl::belowmouse() == this;
     bool clicked = hovered && Fl::event_button1();
 
-    if (!active()) {
-        hovered = false;
-        clicked = false;
+    if (!active_r()) {
+        return this->Type == ButtonType::Primary ? SolidSkin::current->Surface : FL_GRAY;
+//        hovered = false;
+//        clicked = false;
     }
 
     if (Type == ButtonType::Primary) {
@@ -198,7 +203,7 @@ Fl_Color Button::textColor() {
         ret = fl_darker(ret);
     }
 
-    if (!active()) {
+    if (!active_r()) {
         uchar r, g, b;
 
         Fl::get_color(ret, r, g, b);
