@@ -6,10 +6,10 @@
 
 namespace Solid {
     class Window : public SolidBase, public Fl_Double_Window {
-        Group *Content;
-        Group *TitleBar;
+//        Group *Content;
+//        Group *TitleBar;
 
-        static cairo_font_face_t *TitleFont;
+//        static cairo_font_face_t *TitleFont;
         ///This is used to keep track of the dragging and resizing functionalities
         int xoff, yoff;
 
@@ -20,7 +20,7 @@ namespace Solid {
     public:
         Window(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
 
-        int titleHeight = 30;
+//        int titleHeight = 30;
 
         Measure layout() override;
 
@@ -31,7 +31,7 @@ namespace Solid {
             ResizeHeight = 1 << 2
         } Drag = None;
 
-        virtual void add(Fl_Widget *w);
+//        virtual void add(Fl_Widget *w);
 
         void draw() override;
 
@@ -41,18 +41,18 @@ namespace Solid {
 
         void updateLayout() const;
 
-        Fl_Widget *resizable();
+//        Fl_Widget *resizable();
 
-        virtual void resizable(Fl_Widget *w);
+//        virtual void resizable(Fl_Widget *w);
 
         cairo_t *cc;
 
         void show() override;
 
-        int handle(int evt);
+//        int handle(int evt);
 
-        virtual int h();
+//        virtual int h();
 
-        virtual int w();
+//        virtual int w();
     };
 }

@@ -42,14 +42,14 @@ Measure Box::layout() {
         if (isVertical) {
             newY += offset;
             m.Width = std::max(m.Width, w() - this->margin.Horizontal());
-            if (!solidChild->Expand)
-            available -= m.Height;
+            if (solidChild && !solidChild->Expand)
+                available -= m.Height;
             otherAxis = std::max(otherAxis, m.Width + wholeMargin);
         } else {
             newX += offset;
             m.Height = std::max(m.Height, h() - this->margin.Vertical());
-            if (!solidChild->Expand)
-            available -= m.Width;
+            if (solidChild && !solidChild->Expand)
+                available -= m.Width;
             otherAxis = std::max(otherAxis, m.Height + wholeMargin);
         }
 
@@ -63,14 +63,14 @@ Measure Box::layout() {
         //(SpaceLeft - totalSeparationOfWidgets)/howManyWidgets
 
         double sliceOfPizza =
-                available/howManyChildrenHasExpandEnabled;
+                available / howManyChildrenHasExpandEnabled;
 //                (available - spacing * (howManyChildrenHasExpandEnabled - 1)) / howManyChildrenHasExpandEnabled;
 
         for (int child_id = 0; child_id < children(); ++child_id) {
             auto solidChild = dynamic_cast<SolidBase *>(child(child_id));
             auto widget = child(child_id);
             int newW = widget->w(), newH = widget->h();
-            int minsize=isVertical?widget->h():widget->w();
+            int minsize = isVertical ? widget->h() : widget->w();
             if (solidChild && solidChild->Expand &&
                 sliceOfPizza > minsize) {
                 if (isVertical)
@@ -128,5 +128,4 @@ void Box::resize(int x, int y, int w, int h) {
 
 void Box::draw() {
     Group::draw();
-    debugDraw();
 }

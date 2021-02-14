@@ -11,5 +11,7 @@ namespace Solid {
         void resize(int x, int y, int w, int h) override;
 
         void draw() override;
+
+        bool manualClipFromParent=false;
     };
 }

@@ -1,3 +1,5 @@
+//TODO: SOLID: Solid Dark/Light Switch on Runtime
+
 #include "ctype.h"
 #include <cairo.h>
 #include <Fl/Fl_Cairo.H>
@@ -185,7 +187,8 @@ namespace Solid {
         while (w->parent() != nullptr)
             w = w->parent();
         auto *window = dynamic_cast<Solid::Window *>(w);
-        return window == nullptr ? Fl::cairo_make_current(w->as_window()) : window->cc;
+        return window == nullptr ? Fl::cairo_make_current(w->as_window()) : Fl::cairo_make_current(window);
+//        return window == nullptr ? Fl::cairo_make_current(w->as_window()) : window->cc;
     }
 
     Measure SolidBase::measureText(cairo_t *cc, const char *text, int font, int size) {

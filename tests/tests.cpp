@@ -21,9 +21,9 @@ int main() {
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
     auto dropDown = new Solid::DropDown(0, 0, 0, 0, "Test", "DDOWN");
     dropDown->Options = new std::vector<char *>();
-    dropDown->Options->push_back((char*)"Test");
-    dropDown->Options->push_back((char*)"Test 2");
-    dropDown->Options->push_back((char*)"Test 3");
+    dropDown->Options->push_back((char *) "Test");
+    dropDown->Options->push_back((char *) "Test 2");
+    dropDown->Options->push_back((char *) "Test 3");
     dropDown->selectedIndex = 1;
     anotherBox->add(dropDown);
     anotherBox->add(new CheckBox(0, 0, 200, 25, "Test Check"));
@@ -33,7 +33,11 @@ int main() {
     textField->placeholder = "This is some test Text";
 
     anotherBox->add(textField);
-    anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
+    Button *toggleModeButton = Button::Primary(0, 0, 100, 100, "Toggle Mode", "qb");
+    toggleModeButton->callback([](Fl_Widget *, void *) {
+        SolidSkin::toggleMode();
+    });
+    box->add(toggleModeButton);
     Button *o = Button::Outline(0, 0, 100, 100, "Test_1", "qb");
     anotherBox->add(o);
     o->Expand = true;

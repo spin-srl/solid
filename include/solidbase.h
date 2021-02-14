@@ -141,4 +141,38 @@ namespace Solid {
         Fl::get_color(c, r, g, b);
         cairo_set_source_rgb(cc, r / 255.0, g / 255.0, b / 255.0);
     }
+
+    //TODO: Implement other align types! (Currently exclusive TOP DOWN LEFT RIGHT and CENTER are implemented!)
+    inline void cairo_show_text_aligned(cairo_t *cc, const char *text, int x, int y, int w, int h, Fl_Align align) {
+        cairo_text_extents_t extents;
+        cairo_text_extents(cc, text, &extents);
+
+        switch (align) {
+            case FL_ALIGN_CENTER:
+                cairo_move_to(cc, x + w / 2 - extents.width / 2, y + h / 2 + extents.height / 2);
+                break;
+
+            case FL_ALIGN_LEFT:
+                cairo_move_to(cc, x, y + h / 2 + extents.height / 2);
+                break;
+
+            case FL_ALIGN_RIGHT:
+                cairo_move_to(cc, x + w - extents.x_advance, y + h / 2 + extents.height / 2);
+                break;
+
+            case FL_ALIGN_TOP:
+                cairo_move_to(cc, x + w / 2 - extents.width / 2, y + extents.height);
+                break;
+
+            case FL_ALIGN_BOTTOM:
+                cairo_move_to(cc, x + w / 2 - extents.width / 2, y + h);
+                break;
+            default:
+                break;
+        }
+
+        cairo_show_text(cc, text);
+    }
+
+
 }

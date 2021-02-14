@@ -8,22 +8,22 @@
 
 using namespace Solid;
 
-cairo_font_face_t *Solid::Window::TitleFont = cairo_toy_font_face_create("Roboto",
-                                                                         cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
-                                                                         cairo_font_weight_t::CAIRO_FONT_WEIGHT_NORMAL);
+//cairo_font_face_t *Solid::Window::TitleFont = cairo_toy_font_face_create("Roboto",
+//                                                                         cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
+//                                                                         cairo_font_weight_t::CAIRO_FONT_WEIGHT_NORMAL);
 
 Solid::Window::Window(int x, int y, int w, int h, const char *label, const char *name) :
         Fl_Double_Window(x, y, w, h, label),
         SolidBase(name) {
     color(SolidSkin::current->Surface);
-    clear_border();
+//    clear_border();
 
-    this->Content = new Group(0, titleHeight, w, h - titleHeight);
-    this->Content->clip_children(1);
-    Fl_Double_Window::resizable(this->Content);
-    Fl_Double_Window::add(this->Content);
-    Fl_Group::current(this->Content);
-    this->Content->begin();
+//    this->Content = new Group(0, titleHeight, w, h - titleHeight);
+//    this->Content->clip_children(1);
+//    Fl_Double_Window::resizable(this->Content);
+//    Fl_Double_Window::add(this->Content);
+//    Fl_Group::current(this->Content);
+//    this->Content->begin();
 
 //    surf = cairo_image_surface_create(cairo_format_t::CAIRO_FORMAT_A8, WW, WH);
 //    scc = cairo_create(surf);
@@ -54,33 +54,36 @@ void Solid::Window::draw() {
     this->cc = Fl::cairo_make_current(this);
 
     //Clear  background
-    cairo_rectangle(cc, 0, 0, Fl_Double_Window::w(), titleHeight);
+    cairo_rectangle(cc, 0, 0, Fl_Double_Window::w(), Fl_Double_Window::h());
     set_cairo_color(cc, SolidSkin::current->Surface);
     cairo_fill(cc);
 
     updateLayout();
 
     ///Content
-    cairo_reset_clip(cc);
-    this->Content->draw();
+//    Fl_Double_Window::draw();
+    for (int child_id = 0; child_id < children(); ++child_id) {
+        child(child_id)->draw();
+    }
+//    this->Content->draw();
+
 
     //////////////////////////////////
     ///Decorators
     //////////////////////////////////
-    cairo_reset_clip(cc);
 
     //Set font properties
-    cairo_set_font_face(cc, TitleFont);
-    cairo_set_font_size(cc, 12);
+//    cairo_set_font_face(cc, TitleFont);
+//    cairo_set_font_size(cc, 12);
 
     //calc title's extents
-    cairo_text_extents_t titleExtents;
-    cairo_text_extents(cc, label(), &titleExtents);
+//    cairo_text_extents_t titleExtents;
+//    cairo_text_extents(cc, label(), &titleExtents);
 
     //Draw title
-    cairo_move_to(cc, 10, titleHeight / 2.0 + titleExtents.height / 2);
-    set_cairo_color(cc, SolidSkin::current->OnSurface);
-    cairo_show_text(cc, label());
+//    cairo_move_to(cc, 10, titleHeight / 2.0 + titleExtents.height / 2);
+//    set_cairo_color(cc, SolidSkin::current->OnSurface);
+//    cairo_show_text(cc, label());
     //////////////////////////////////
 
     //To Debug Content Widget's extents
@@ -88,7 +91,8 @@ void Solid::Window::draw() {
 }
 
 void Solid::Window::updateLayout() const {
-    this->Content->layout();
+//    this->Content->layout();
+
 //        for (int child_id = 0; child_id < children(); ++child_id) {
 //        auto _child = dynamic_cast<SolidBase *>(child(child_id));
 //        if (_child != nullptr) {
@@ -120,7 +124,6 @@ void Solid::Window::resize(int x, int y, int w, int h) {
 //    }
 
     Fl_Double_Window::resize(x, y, w, h);
-
 }
 
 //char *printDragType(Window::DragType type) {
@@ -132,80 +135,80 @@ void Solid::Window::resize(int x, int y, int w, int h) {
 //    printf("\n");
 //}
 
-int Window::handle(int event) {
-    switch (event) {
-        case FL_PUSH:
-            if (Fl::event_clicks() && Fl::belowmouse() == this) {
-                if (fullscreen_active())
-                    fullscreen_off();
-                else
-                    fullscreen();
+//int Window::handle(int event) {
+//    switch (event) {
+//        case FL_PUSH:
+//            if (Fl::event_clicks() && Fl::belowmouse() == this) {
+//                if (fullscreen_active())
+//                    fullscreen_off();
+//                else
+//                    fullscreen();
+//
+//                return Fl_Double_Window::handle(event);
+//            }
+//
+//            Drag = None;
+//
+//            if (Fl::event_x() > w() - 10)
+//                Drag = DragType::ResizeWidth;
+//
+//            if (Fl::event_y() > h() - 10)
+//                Drag = static_cast<DragType>(Drag | ResizeHeight);
+//
+//            if (Drag == None && Fl::belowmouse() == this)
+//                Drag = Move;
+//
+////            printDragType(Drag);
+//
+//            xoff = this->x() - Fl::event_x_root();
+//            yoff = this->y() - Fl::event_y_root();
+//
+//            Fl_Double_Window::handle(event);
+//            return 1;
+//
+//        case FL_DRAG:
+//            if (Drag & Move) {
+//                this->position(xoff + Fl::event_x_root(), yoff + Fl::event_y_root());
+//            } else {
+//                int newW = w() + padding.Horizontal(), newH = h() + padding.Vertical();
+//
+//                if (Drag & ResizeWidth)
+//                    newW = Fl::event_x() + 5;
+//                if (Drag & ResizeHeight)
+//                    newH = Fl::event_y() + 5;
+//
+//                if (newW != w() || newH != h())
+//                    this->size(newW, newH);
+//            }
+//
+//            this->redraw();
+//            break;
+//
+//        case FL_RELEASE:
+//            this->show();
+//            break;
+//    }
+//
+//    return Fl_Double_Window::handle(event);
+//}
 
-                return Fl_Double_Window::handle(event);
-            }
+//void Window::add(Fl_Widget *w) {
+//    w->position(w->x(), w->y() + titleHeight);
+//    this->Content->add(w);
+//}
+//
+//int Window::w() {
+//    return Fl_Double_Window::w() - padding.Horizontal();
+//}
 
-            Drag = None;
+//int Window::h() {
+//    return Fl_Double_Window::h() - titleHeight - padding.Vertical();
+//}
 
-            if (Fl::event_x() > w() - 10)
-                Drag = DragType::ResizeWidth;
+//void Window::resizable(Fl_Widget *w) {
+//    this->Content->resizable(w);
+//}
 
-            if (Fl::event_y() > h() - 10)
-                Drag = static_cast<DragType>(Drag | ResizeHeight);
-
-            if (Drag == None && Fl::belowmouse() == this)
-                Drag = Move;
-
-//            printDragType(Drag);
-
-            xoff = this->x() - Fl::event_x_root();
-            yoff = this->y() - Fl::event_y_root();
-
-            Fl_Double_Window::handle(event);
-            return 1;
-
-        case FL_DRAG:
-            if (Drag & Move) {
-                this->position(xoff + Fl::event_x_root(), yoff + Fl::event_y_root());
-            } else {
-                int newW = w() + padding.Horizontal(), newH = h() + padding.Vertical() + titleHeight;
-
-                if (Drag & ResizeWidth)
-                    newW = Fl::event_x() + 5;
-                if (Drag & ResizeHeight)
-                    newH = Fl::event_y() + 5;
-
-                if (newW != w() || newH != h())
-                    this->size(newW, newH);
-            }
-
-            this->redraw();
-            break;
-
-        case FL_RELEASE:
-            this->show();
-            break;
-    }
-
-    return Fl_Double_Window::handle(event);
-}
-
-void Window::add(Fl_Widget *w) {
-    w->position(w->x(), w->y() + titleHeight);
-    this->Content->add(w);
-}
-
-int Window::w() {
-    return Fl_Double_Window::w() - padding.Horizontal();
-}
-
-int Window::h() {
-    return Fl_Double_Window::h() - titleHeight - padding.Vertical();
-}
-
-void Window::resizable(Fl_Widget *w) {
-    this->Content->resizable(w);
-}
-
-Fl_Widget *Window::resizable() {
-    return this->Content->resizable();
-}
+//Fl_Widget *Window::resizable() {
+//    return this->Content->resizable();
+//}

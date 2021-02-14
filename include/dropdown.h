@@ -15,7 +15,7 @@ class DropDown: public Solid::Button{
         int selectedIndex = -1;
         std::vector<char *> *Options;
 
-        DropDown(int x, int y, int w, int h, const char *label, const char *name);
+        DropDown(int x, int y, int w, int h, const char *label= nullptr, const char *name= nullptr);
 
         void draw() override;
 

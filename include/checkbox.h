@@ -12,7 +12,7 @@
 namespace Solid {
     class CheckBox : public Button {
     public:
-        CheckBox(int x, int y, int w, int h, const char *label, const char *name = nullptr);
+        CheckBox(int x, int y, int w, int h, const char *label= nullptr, const char *name = nullptr);
 
         void draw();
 
