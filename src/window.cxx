@@ -49,7 +49,6 @@ void Solid::Window::show() {
     updateLayout();
     Fl_Double_Window::show();
 }
-
 void Solid::Window::draw() {
     this->cc = Fl::cairo_make_current(this);
 
