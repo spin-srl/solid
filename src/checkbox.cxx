@@ -15,7 +15,7 @@ void Solid::CheckBox::draw() {
     auto cc = get_cc();
     cairo_text_extents_t extents;
 
-    set_cairo_color(cc, SolidSkin::current->OnSurface);
+    set_cairo_color(cc, active_r() ? SolidSkin::current->OnSurface : FL_GRAY);
     cairo_set_font_size(cc, 12);
     cairo_set_font_face(cc, SolidSkin::fonts[1]);
     cairo_text_extents(cc, label(), &extents);

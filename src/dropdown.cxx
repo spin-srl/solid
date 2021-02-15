@@ -100,6 +100,8 @@ DropDown::DropDown(int x, int y, int w, int h, const char *label, const char *na
     when(FL_WHEN_RELEASE);
     Type = ButtonType::Primary;
 
+    padding={};
+
     callback([](Fl_Widget *w, void *ptr) {
         printf("Showing popup\n");
         auto dd = dynamic_cast<DropDown *>(w);
@@ -149,7 +151,7 @@ void DropDown::draw() {
         if (selectedIndex != -1) {
             auto extents = calcExtents(cc, Options->at(selectedIndex));
 
-            set_cairo_color(cc, SolidSkin::current->OnSurface);
+            set_cairo_color(cc, active_r() ? SolidSkin::current->OnSurface : FL_GRAY);
             cairo_set_font_face(cc, SolidSkin::fonts[1]);
             cairo_set_font_size(cc, this->labelsize());
             cairo_move_to(cc, this->x() + 6, this->y() + this->h() / 2 + extents.height / 2);

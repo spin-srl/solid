@@ -31,7 +31,10 @@ namespace Solid {
         }
 
         /// Construct from ints
-        Measure(int w, int h) : Width(w), Height(h) {
+//        Measure(int w, int h) : Width(w), Height(h) {
+//        };
+
+        Measure(float w, float h) : Width(w), Height(h) {
         };
     };
 

@@ -2,7 +2,7 @@
 
 using namespace Solid;
 
-int main() {
+int main_test() {
     printf("FLTK VERSION: %f/%d\n", Fl::version(), Fl::abi_version());
 
     SolidBase::initialize();
@@ -15,7 +15,6 @@ int main() {
 
 
     auto anotherBox = new Box(0, 0, 0, 0, "anotherBox");
-    anotherBox->deactivate();
     anotherBox->direction = Vertical;
     anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
@@ -46,7 +45,19 @@ int main() {
     anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
     anotherBox->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
 
-    box->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
+    auto active_button = Button::Primary(0, 0, 100, 100, "Toggle Active", "qb");
+    active_button->callback([](Fl_Widget *, void *param) {
+        auto w = reinterpret_cast<Fl_Widget * >(param);
+        if (w->active()) {
+            printf("It's active, deactivating...\n");
+            w->deactivate();
+        } else {
+            printf("It's inactive, activating...\n");
+            w->activate();
+        }
+    }, anotherBox);
+
+    box->add(active_button);
     Button *pButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
     pButton->Expand = true;
     box->add(pButton);
@@ -67,6 +78,7 @@ int main() {
 
     container->box(Fl_Boxtype::FL_FLAT_BOX);
     container->color(FL_GRAY);
+    anotherBox->deactivate();
 
     mw->add(container);
     mw->resizable(container);
@@ -75,5 +87,28 @@ int main() {
     Fl::run();
 
     delete mw;
+    return 0;
+}
+
+
+int button_test() {
+    auto *mw = new Window(0, 0, 800, 400, "TestWindow");
+
+    mw->add(Button::Primary(5, 5, 100, 25, "Button"));
+    mw->add(Button::Outline(5, 30, 100, 25, "Button"));
+    mw->add(Button::Text(5, 60, 100, 25, "Button"));
+    mw->show();
+
+    Fl::run();
+
+    delete mw;
+    return 0;
+}
+
+int main() {
+    SolidBase::initialize();
+
+    button_test();
+
     return 0;
 }

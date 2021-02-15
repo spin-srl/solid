@@ -12,6 +12,7 @@ Button::Button(int x, int y, int w, int h, const char *label, const char *name) 
     this->labelfont(1);
     this->labelsize(12);
     this->label(label);
+    this->padding = {7, 7, 10, 10};
 }
 
 int Button::handle(int evt) {
@@ -31,6 +32,16 @@ int Button::handle(int evt) {
     return Fl_Button::handle(evt);
 }
 
+void drawSpacedText(cairo_t *cc, const char *text, float spacing) {
+    char buff[2];
+
+    for (int i = 0; i < strlen(text); i++) {
+        buff[0] = text[i];
+
+        cairo_show_text(cc, buff);
+        cairo_rel_move_to(cc, spacing, 0);
+    }
+}
 
 void Button::draw() {
     cairo_t *cc = get_cc();
@@ -63,24 +74,28 @@ void Button::draw() {
             break;
     }
 
-    set_cairo_color(cc, textColor());
-
-    auto font = SolidSkin::fonts[1];
-
-    cairo_set_line_width(cc, 1);
-    cairo_set_font_face(cc, font);
-    cairo_set_font_size(cc, labelsize());
-
-    cairo_text_extents_t extents;
-    cairo_text_extents(cc, label(), &extents);
-    cairo_move_to(cc, x() + w() / 2 - extents.width / 2, y() + h() / 2 + extents.height / 2);
-
-    cairo_show_text(cc, label());
+    draw_label(cc);
 
     if (Fl::belowmouse() != this->as_widget())
         return;
 
     debugDraw();
+}
+
+void Button::draw_label(cairo_t *cc) {
+    set_cairo_color(cc, textColor());
+
+    auto font = SolidSkin::fonts[0];
+
+    cairo_set_line_width(cc, 1);
+    cairo_set_font_face(cc, font);
+    cairo_set_font_size(cc, labelsize());
+
+    Measure m = layout();
+    cairo_move_to(cc, x() + w() / 2.0 - (m.Width - padding.Horizontal()) / 2,
+                  y() + h() / 2.0 + (m.Height - padding.Vertical()) / 2);
+
+    drawSpacedText(cc, label(), fontSpacing);
 }
 
 #include "ctype.h"
@@ -105,15 +120,25 @@ Measure Button::layout() {
 
     auto cc = Fl::cairo_cc();
     if (cc == nullptr || label() == nullptr) {
-        return Measure{w(), h()};
+        return Measure{static_cast<float>(w()), static_cast<float>(h())};
     }
 
     cairo_set_font_face(cc, SolidSkin::fonts[1]);
     cairo_set_font_size(cc, labelsize());
     cairo_text_extents(cc, label(), &extents);
 
-    return Measure{20 + static_cast<int>(extents.width + padding.Horizontal()),
-                   15 + static_cast<int>(extents.height + padding.Vertical())};
+    float _spacing = 0;
+
+    if (label() != nullptr) {
+        int label_length = strlen(label());
+        if (label_length > 0)
+            _spacing = (static_cast<float>(label_length) - 1) * fontSpacing;
+    }
+
+    Measure m;
+    m.Width = padding.Horizontal() + extents.x_advance + _spacing;
+    m.Height = padding.Vertical() + extents.height;
+    return m;
 }
 
 Button *Button::Primary(int x, int y, int w, int h, const char *label, const char *name) {
@@ -213,4 +238,19 @@ Fl_Color Button::textColor() {
     }
 
     return ret;
+}
+
+PrimaryButton::PrimaryButton(int x, int y, int w, int h, const char *label, const char *name) : Button(x, y, w, h,
+                                                                                                       label, name) {
+    this->Type = ButtonType::Primary;
+}
+
+OutlineButton::OutlineButton(int x, int y, int w, int h, const char *label, const char *name) : Button(x, y, w, h,
+                                                                                                       label, name) {
+    this->Type = ButtonType::Outline;
+}
+
+TextButton::TextButton(int x, int y, int w, int h, const char *label, const char *name) : Button(x, y, w, h,
+                                                                                                 label, name) {
+    this->Type = ButtonType::Text;
 }

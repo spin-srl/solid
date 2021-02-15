@@ -14,9 +14,10 @@ namespace Solid {
 
     class Button : public SolidBase, public Fl_Button {
     public:
-        ButtonType Type = ButtonType::Text;
+        ButtonType Type = ButtonType::Outline;
 
         Button(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+
         int handle(int evt) override;
 
         virtual void label(const char *l);
@@ -35,9 +36,13 @@ namespace Solid {
 
         static Button *Primary(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
 
-        static Button *Outline(int x, int y, int w, int h, const char *label, const char *name= nullptr);
+        static Button *Outline(int x, int y, int w, int h, const char *label, const char *name = nullptr);
 
-        static Button *Text(int x, int y, int w, int h, const char *label, const char *name= nullptr);
+        static Button *Text(int x, int y, int w, int h, const char *label, const char *name = nullptr);
+
+        float fontSpacing = 1;
+
+        void draw_label(cairo_t *cc);
     };
 
     static const double degree_to_radian = 3.14159265358979 / 180.0;
@@ -53,4 +58,16 @@ namespace Solid {
         cairo_arc(cc, x + r, y + h - r, r, 90 * degree_to_radian, 180 * degree_to_radian);
         cairo_line_to(cc, x, y + r);
     }
+
+    struct PrimaryButton : public Button {
+        PrimaryButton(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+    };
+
+    struct TextButton : public Button {
+        TextButton(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+    };
+
+    struct OutlineButton : public Button {
+        OutlineButton(int x, int y, int w, int h, const char *label = nullptr, const char *name = nullptr);
+    };
 }
