@@ -6,16 +6,18 @@ using namespace Solid;
 bool SolidSkin::initialized = false;
 SolidSkin *SolidSkin::current;
 pthread_t SolidSkin::animationThread;
-std::vector<cairo_font_face_t *> SolidSkin::fonts = {cairo_toy_font_face_create("Roboto",
-                                                                                cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
-                                                                                cairo_font_weight_t::CAIRO_FONT_WEIGHT_NORMAL),
-                                                     cairo_toy_font_face_create("Roboto",
-                                                                                cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
-                                                                                cairo_font_weight_t::CAIRO_FONT_WEIGHT_BOLD)};
+std::vector<cairo_font_face_t *> SolidSkin::fonts;
 
 bool SolidSkin::initialize() {
     if (initialized)
         return false;
+
+    fonts = {cairo_toy_font_face_create("Roboto",
+                                        cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
+                                        CAIRO_FONT_WEIGHT_NORMAL),
+             cairo_toy_font_face_create("Roboto",
+                                        cairo_font_slant_t::CAIRO_FONT_SLANT_NORMAL,
+                                        cairo_font_weight_t::CAIRO_FONT_WEIGHT_BOLD)};
 
     current = new SolidSkin();
 

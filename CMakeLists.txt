@@ -8,7 +8,7 @@ else ()
     set(IS_WIN True)
 endif ()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -40,8 +40,17 @@ target_include_directories(app PUBLIC "include")
 message("Building for " ${TARGET_OS})
 
 if (TARGET_OS STREQUAL "linux")
-#    include_directories("/usr/include/cairo")
-    target_include_directories(${PROJECT_NAME} PUBLIC "/usr/include/cairo")
+    include(/opt/ddtfltk/share/fltk/FLTKConfig.cmake)
+
+    target_link_directories(${PROJECT_NAME} PUBLIC "/opt/cairo/lib")
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${FLTK_INCLUDE_DIRS}
+            "/usr/local/include"
+            "/usr/include/cairo/"
+            )
+
+    message(${FLTK_INCLUDE_DIRS})
+
     target_link_libraries(app fltk fltk_cairo
             X11
             Xext
@@ -74,7 +83,7 @@ else ()
         include_directories(${FLTK_INCLUDE_DIRS})
         include_directories(G:/msys64/mingw64/include/cairo)
     else ()
-        include("/media/ddt/BC2436A224365F96/Softwares/development/FLTK/fltk-windows-debug/FLTKConfig.cmake")
+        include("/media/Datos/Softwares/development/FLTK/fltk-windows-debug/FLTKConfig.cmake")
 
         target_link_libraries(app
                 fltk

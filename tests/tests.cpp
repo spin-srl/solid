@@ -1,61 +1,114 @@
-#include "solidbase.h"
-#include "window.h"
-#include "button.h"
-#include "box.h"
-#include <Fl/Fl_Input.H>
+#include "solid.h"
 
 using namespace Solid;
 
-int main() {
+int main_test() {
+    printf("FLTK VERSION: %f/%d\n", Fl::version(), Fl::abi_version());
+
     SolidBase::initialize();
 
-    auto *mw = new Window(0, 0, 800, 400, "TestWindow", "TW");
-    mw->end();
+    auto *mw = new Window(0, 0, 800, 400, "TestWindow");
 
-    Box *horizontalGroup = new Box(100, 10, 150, 50, "horizontalGroup");
-    horizontalGroup->end();
 
-    horizontalGroup->direction = Horizontal;
+    auto container = new Group(0, 0, mw->w(), mw->h());
+    auto box = new Box(0, 0, mw->w(), mw->h(), "box0");
 
-    auto b = new Button(0, 0, 0, 0, "Text", "TextB");
-    auto b2 = new Button(0, 0, 0, 0, "Outline", "OutlineB");
-    auto secondGroup = new Box(0, 0, 0, 0, "g0");
-//    auto flInputTest = new Fl_Input(0, 0, 100, 25, "");
 
-    secondGroup->direction = Vertical;
+    auto anotherBox = new Box(0, 0, 0, 0, "anotherBox");
+    anotherBox->direction = Vertical;
+    anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
+    anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
+    auto dropDown = new Solid::DropDown(0, 0, 0, 0, "Test", "DDOWN");
+    dropDown->Options = new std::vector<char *>();
+    dropDown->Options->push_back((char *) "Test");
+    dropDown->Options->push_back((char *) "Test 2");
+    dropDown->Options->push_back((char *) "Test 3");
+    dropDown->selectedIndex = 1;
+    anotherBox->add(dropDown);
+    anotherBox->add(new CheckBox(0, 0, 200, 25, "Test Check"));
 
-    b->boxAlign = BoxAlign::Fill;
+    TextField *textField = new TextField(0, 0, 200, 25, "Simple Text Field:");
+    textField->value("This is a fucking test only");
+    textField->placeholder = "This is some test Text";
 
-    auto b3 = new Button(0, 0, 0, 0, "B3", "b3");
-    auto b4 = new Button(0, 0, 0, 0, "B4", "b4");
-    auto b5 = new Button(0, 0, 0, 0, "B5", "b5");
-    b3->boxAlign = BoxAlign::Fill;
-    b5->Type = Primary;
+    anotherBox->add(textField);
+    Button *toggleModeButton = Button::Primary(0, 0, 100, 100, "Toggle Mode", "qb");
+    toggleModeButton->callback([](Fl_Widget *, void *) {
+        SolidSkin::toggleMode();
+    });
+    box->add(toggleModeButton);
+    Button *o = Button::Outline(0, 0, 100, 100, "Test_1", "qb");
+    anotherBox->add(o);
+    o->Expand = true;
+    anotherBox->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
+    anotherBox->add(Button::Primary(0, 0, 100, 100, "Test_0", "qb"));
+    anotherBox->add(Button::Outline(0, 0, 100, 100, "Test_1", "qb"));
+    anotherBox->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
 
-    b->Type = ButtonType::Text;
-    b2->Type = ButtonType::Outline;
-    b3->Type = ButtonType::Primary;
+    auto active_button = Button::Primary(0, 0, 100, 100, "Toggle Active", "qb");
+    active_button->callback([](Fl_Widget *, void *param) {
+        auto w = reinterpret_cast<Fl_Widget * >(param);
+        if (w->active()) {
+            printf("It's active, deactivating...\n");
+            w->deactivate();
+        } else {
+            printf("It's inactive, activating...\n");
+            w->activate();
+        }
+    }, anotherBox);
 
-    horizontalGroup->position(5, 5);
-    horizontalGroup->margin = Margins{5, 5, 5, 5};
-    horizontalGroup->spacing = 5;
+    box->add(active_button);
+    Button *pButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
+    pButton->Expand = true;
+    box->add(pButton);
+    Button *qButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
+    qButton->Expand = true;
+    box->add(qButton);
+    Button *rButton = Button::Primary(0, 0, 100, 100, "Test_1", "qb");
+    rButton->Expand = true;
+    box->add(rButton);
+    box->add(Button::Text(0, 0, 100, 100, "Test_2", "qb"));
+    box->add(anotherBox);
 
-    horizontalGroup->add(b);
-    horizontalGroup->add(b2);
-    horizontalGroup->add(secondGroup);
-    secondGroup->add(b3);
-    secondGroup->add(b4);
-    secondGroup->add(b5);
-    secondGroup->spacing = 5;
-    secondGroup->margin = Margins{0, 0, 0, 0};
-//    horizontalGroup->add(flInputTest);
+    container->add(box);
+    box->box(FL_FLAT_BOX);
+    box->color(FL_RED);
+    box->resizable(anotherBox);
+    container->resizable(box);
 
-    mw->add(horizontalGroup);
-    mw->resizable(horizontalGroup);
+    container->box(Fl_Boxtype::FL_FLAT_BOX);
+    container->color(FL_GRAY);
+    anotherBox->deactivate();
+
+    mw->add(container);
+    mw->resizable(container);
     mw->show();
 
     Fl::run();
 
     delete mw;
+    return 0;
+}
+
+
+int button_test() {
+    auto *mw = new Window(0, 0, 800, 400, "TestWindow");
+
+    mw->add(Button::Primary(5, 5, 100, 25, "Button"));
+    mw->add(Button::Outline(5, 30, 100, 25, "Button"));
+    mw->add(Button::Text(5, 60, 100, 25, "Button"));
+    mw->show();
+
+    Fl::run();
+
+    delete mw;
+    return 0;
+}
+
+int main() {
+    SolidBase::initialize();
+
+    button_test();
+
     return 0;
 }
